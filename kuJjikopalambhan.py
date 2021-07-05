@@ -14,9 +14,9 @@ from time import time, sleep
 from threading import Thread
 from base64 import b64encode
 from json import loads
-
-sarve_bhAShA = "G4LEA7,hds8ocmg.p2fn09yQizY6wR$b'lqxaCJNDkTUW-rue3H5;#M1IStvKOj"
-
+#sarve_bhAShA
+sarve_bhAShA = "#$',-.0123456789;ACDEGHIJKLMNOQRSTUWYabcdefghijklmnopqrstuvwxyz"
+#sarve_bhAShA
 
 class kuYjikolambhikam:
     def __init__(self, obj):

@@ -197,7 +197,7 @@ class pradarshanam:
         self.style = ttk.Style(self.root)
         self.advanced_window_data_preperation = False
         self.root.wm_withdraw()
-        self.__title_objs = {}
+        self.__objs = {}
         self.img_window_status = False
         sdf = get_registry("language")
         self.language = StringVar(self.root, display_lang_lists[sdf])
@@ -237,6 +237,8 @@ class pradarshanam:
         self.m.menu.entryconfigure(8, image=about_img)
         self.m.menu.entryconfigure(7, image=convert_img)
         fh = ImageTk.PhotoImage(Image.open(r"resources\img\menu.png"))
+        add = ImageTk.PhotoImage(Image.open(r"resources\img\add.png"))
+        self.__objs["add_lang"].configure(image=add)
         self.m.configure(image=fh)
         i = ImageTk.PhotoImage(
             master=self.root, image=Image.open(r"resources\img\usage.png")
@@ -244,7 +246,7 @@ class pradarshanam:
         self.usage_btn.configure(image=i)
         lang_img = ImageTk.PhotoImage(Image.open(r"resources\img\lang.png"))
         dfg = ttk.Label(self.top_frame, image=lang_img)
-        self.__title_objs["app_lang_img"] = dfg
+        self.__objs["app_lang_img"] = dfg
         dfg.grid(row=0, column=3, sticky=NW)
         if main_obj.window_start_status == 0:
             self.root.wm_deiconify()
@@ -273,9 +275,10 @@ class pradarshanam:
             "menu": (35, 9),
             "main": (4, 32),
             "sahayika": (-10, 23),
+            "add_lang": (-28, 22),
         }
         self.title_ref = {}
-        for x in self.__title_objs:
+        for x in self.__objs:
             d = self.__title_properties[x]
             name = x
             if x in self.__dynamic_titles:
@@ -284,7 +287,7 @@ class pradarshanam:
             self.title_ref[x] = ToolTip(
                 x,
                 self.root,
-                self.__title_objs[x],
+                self.__objs[x],
                 self.l_data["title"][name],
                 d[0],
                 d[1],
@@ -293,17 +296,16 @@ class pradarshanam:
 
     def __top_frame(self):
         self.top_frame = Frame(self.root)
-        ttk.Label(self.top_frame, text=" " * 5).grid(row=0, column=1, sticky=NW)
         self.style.configure(
             "B.TMenubutton",
             font=("Nirmala UI", 8, "bold"),
             foreground="purple",
             background="white",
         )
-        self.usage_btn = ttk.Label(self.top_frame, compound="left", text="   ")
-        self.__title_objs["usage"] = self.usage_btn
+        self.usage_btn = ttk.Label(self.top_frame, compound="left")
+        self.__objs["usage"] = self.usage_btn
         self.usage_btn.bind("<Button-1>", lambda s: self.open_img())
-        self.usage_btn.grid(row=0, column=2, sticky=NW)
+        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0))
         ad = list(deepcopy(display_lang_lists))[::-1]
         ad.append("")
         ad = ad[::-1]
@@ -318,10 +320,9 @@ class pradarshanam:
             command=self.update_lang_data,
         )
         bhASA.grid(row=0, column=0, stick=NW)
-        frame1.grid(row=0, column=4, stick=NW)
-        self.__title_objs["app_lang_option"] = frame1
+        frame1.grid(row=0, column=4, stick=NW, padx=(0, 25), pady=(1.5, 0))
+        self.__objs["app_lang_option"] = frame1
         bhASA["menu"].config(font=("Nirmala UI", (8), "bold"), fg="red")
-        ttk.Label(self.top_frame, text=" " * 7).grid(row=0, column=5, sticky=NW)
         self.style.configure(
             "A.TButton",
             font=("Nirmala UI", 9, "bold"),
@@ -335,16 +336,15 @@ class pradarshanam:
             textvariable=self.display_values["background_run"],
             command=self.hide,
         )
-        bac.grid(row=0, column=6, sticky="ne")
-        self.__title_objs["background"] = bac
-        ttk.Label(self.top_frame, text="    ").grid(row=0, column=7, sticky="ne")
+        bac.grid(row=0, column=6, sticky="ne", padx=(0, 19.5))
+        self.__objs["background"] = bac
         self.top_frame.grid(row=0, sticky=NW)
         self.__menu_kAraH()
 
     def __menu_kAraH(self):
         self.m = Menubutton(self.top_frame)
         self.m.menu = Menu(self.m, tearoff=False)
-        self.__title_objs["menu"] = self.m
+        self.__objs["menu"] = self.m
         self.m["menu"] = self.m.menu
         self.menu_values = self.l_data["menu_values"]
         self.m.menu.add_command(
@@ -449,12 +449,11 @@ class pradarshanam:
             ImageTk.PhotoImage(Image.open(r"resources\img\on.png")),
         )
         self.kAryaM = ttk.Label(command_frame)
-        self.kAryaM.grid(row=0, column=0, sticky=NW)
+        self.kAryaM.grid(row=0, column=0, sticky=NW, padx=(0, 25))
         self.kAryaM.bind(
             "<Button-1>", lambda x: self.main_object.change(True, False, True)
         )
-        self.__title_objs["main"] = self.kAryaM
-        ttk.Label(command_frame, text=" " * 8).grid(row=0, column=1, sticky=NW)
+        self.__objs["main"] = self.kAryaM
         self.style.configure(
             "SA.TRadiobutton", font=("Nirmala UI", 9, "bold"), background="lightblue"
         )
@@ -478,7 +477,7 @@ class pradarshanam:
         )
         saon.grid(row=0, column=1, sticky=NW)
         if self.main_object.lang_mode not in ("Urdu", "Romanized", "Kashmiri"):
-            self.fr_ajay.grid(row=0, column=2, sticky="nw")
+            self.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.8, 0))
         command_frame.grid(row=2, column=0, sticky=NW)
         frame = ttk.Frame(self.root)
         self.style.configure(
@@ -509,27 +508,29 @@ class pradarshanam:
             ),
         )
         sd.grid(row=0, column=1, stick=NW)
-        frame1.grid(row=0, column=1, stick=NW)
-        self.__title_objs["typ_lang"] = frame1
+        frame1.grid(row=0, column=1, stick=NW, padx=1)
+        self.__objs["typ_lang"] = frame1
         sd["menu"].config(font=("Nirmala UI", 10, "bold"), fg="red", bg="#faf9ae")
+        add = ttk.Label(frame)
+        add.grid(row=0, column=2, sticky=NW, pady=4, padx=(3.3, 6.4))
+        self.__objs["add_lang"] = add
         self.image1 = (
             ImageTk.PhotoImage(Image.open(r"resources\img\off1.png")),
             ImageTk.PhotoImage(Image.open(r"resources\img\on1.png")),
         )
-        ttk.Label(frame, text=" " * 4).grid(row=0, column=2, sticky=NW)
         self.sg_button = ttk.Label(frame)
-        self.sg_button.grid(row=0, column=3, sticky=NW)
+        self.sg_button.grid(row=0, column=4, sticky=NW, pady=2.5)
         self.sg_button.bind(
             "<Button-1>", lambda x: self.main_object.exec_taskbar_commands("sg", False)
         )
-        self.__title_objs["sahayika"] = self.sg_button
+        self.__objs["sahayika"] = self.sg_button
         self.style.configure(
             "sah.TLabel", font=("Nirmala UI", 11, "bold"), foreground="blue"
         )
         hl = ttk.Label(
             frame, textvariable=self.display_values["sahayika"], style="sah.TLabel"
         )
-        hl.grid(row=0, column=4, sticky=NW)
+        hl.grid(row=0, column=5, sticky=NW)
 
         def sg_label_click():
             self.style.configure("sah.TLabel", foreground="black")
@@ -593,8 +594,9 @@ class pradarshanam:
             "bh.TLabel", font=("Nirmala UI", 11, "bold"), foreground="blue"
         )
         f = ttk.Frame(about)
-        ttk.Label(f, text="भारते रचितः", style="bh.TLabel").grid(row=0, column=0)
-        ttk.Label(f, text="  ", style="bh.TLabel").grid(row=0, column=1)
+        ttk.Label(f, text="भारते रचितः", style="bh.TLabel").grid(
+            row=0, column=0, padx=(0, 10)
+        )
         git = ttk.Label(f)
         git.grid(row=0, column=2)
         f.pack()
@@ -883,9 +885,6 @@ class sahAyikA:
             foreground="green",
             background="#faf9ae",
         )
-        style.configure(
-            "U.TLabel", font=("Nirmala UI", 15, "bold"), background="#faf9ae"
-        )
         frm = Frame(self.frame, bg="#faf9ae")
         ttk.Label(frm, textvariable=self.key[0], style="A.TLabel", justify=CENTER).grid(
             row=0, column=0, sticky="n"
@@ -893,9 +892,7 @@ class sahAyikA:
         ttk.Label(frm, textvariable=self.key[1], style="B.TLabel", justify=CENTER).grid(
             row=1, column=0, sticky="n"
         )
-        ttk.Label(frm, text=" ", style="U.TLabel").grid(row=0, column=1)
-        ttk.Label(frm, text=" ", style="U.TLabel").grid(row=1, column=1)
-        frm.grid(row=0, column=0, sticky=NW)
+        frm.grid(row=0, column=0, sticky=NW, padx=(0, 8))
         self.f = []
         for x in range(0, 60):
             self.f.append(None)

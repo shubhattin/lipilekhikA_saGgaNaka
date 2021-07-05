@@ -1,6 +1,8 @@
 from json import load, dumps
-from pyperclip import copy
 from copy import deepcopy
+from os import environ
+
+root = environ["lipilekhikAsthAnam"]
 
 
 def antaH_parivartan(js):
@@ -10,10 +12,14 @@ def antaH_parivartan(js):
     return ret
 
 
-file = open(r"test\mukhya.json", mode="r", encoding="utf-8")
+file = open(
+    f"{root}\\saGgaNakAnuprayogaH\\kAraH\\test\\mukhya.json", mode="r", encoding="utf-8"
+)
 a = load(file)
 file.close()
-file = open("mAtrA.json", mode="r", encoding="utf-8")
+file = open(
+    f"{root}\\saGgaNakAnuprayogaH\\kAraH\\mAtrA.json", mode="r", encoding="utf-8"
+)
 mAtrA = load(file)
 file.close()
 mAtrA_map = {
@@ -81,7 +87,7 @@ def swap(js):
 for lang in mAtrA:
     bhAShAmAtrA[lang] = swap(mAtrA[lang])
 for lang in a:
-    if lang in ("Hindi", "Marathi", "Konkani", "Nepali","Kashmiri"):
+    if lang in ("Hindi", "Marathi", "Konkani", "Nepali", "Kashmiri"):
         continue
     for char in a[lang]:
         if char == "く" or char == "x":
@@ -107,7 +113,7 @@ for lang in a:
                     )
 for lang in a:
     extra = ""
-    if lang in ("Hindi", "Marathi", "Konkani", "Nepali","Kashmiri"):
+    if lang in ("Hindi", "Marathi", "Konkani", "Nepali", "Kashmiri"):
         continue
     if lang in ("Normal"):
         continue
@@ -335,7 +341,7 @@ for lang in p:
             p1[lang][a[lang][tr[0]][tr][0] + a[lang]["."][".z"][0]] = v
 p = p1
 for lang in a:
-    if lang in ("Hindi", "Marathi", "Konkani", "Nepali","Kashmiri"):
+    if lang in ("Hindi", "Marathi", "Konkani", "Nepali", "Kashmiri"):
         continue
     if lang in ("Romanized", "Normal", "Urdu"):
         continue
@@ -345,16 +351,19 @@ for lang in a:
         nukta = ak["."][".z"][0]
         p1[ak["p"]["ph"][0] + nukta] = "phz此"
 d = dumps(p, ensure_ascii=False, sort_keys=False, indent=4)
-copy(d)
-file = open(r"test\anudattAMsh.json", mode="w+", encoding="utf-8")
+file = open(
+    f"{root}\\saGgaNakAnuprayogaH\\kAraH\\test\\anudattAMsh.json",
+    mode="w+",
+    encoding="utf-8",
+)
 file.write(d)
 file.close()
 d = dumps(p, ensure_ascii=False, sort_keys=False)
 d = d.replace(': "', ':"')
 d = d.replace(', "', ',"')
-d = d.replace(': {', ':{')
+d = d.replace(": {", ":{")
 file = open(
-    r"D:\Softwares\Z\jAlAnuprayogaH\src\dattAMsh\antar.json",
+    f"{root}\\jAlAnuprayogaH\\src\\dattAMsh\\antar.json",
     mode="w+",
     encoding="utf-8",
 )

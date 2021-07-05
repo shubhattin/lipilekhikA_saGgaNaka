@@ -1,7 +1,7 @@
 from json import dumps, load
-from pyperclip import copy
-
-file = open("mAtrA.json", mode="r+", encoding="utf-8")
+from os import environ
+root=environ["lipilekhikAsthAnam"]
+file = open(f"{root}\\saGgaNakAnuprayogaH\\kAraH\\mAtrA.json", mode="r+", encoding="utf-8")
 mAtrA = load(file)
 file.close()
 
@@ -2691,7 +2691,7 @@ file.close()
 from base64 import b64encode
 for x in akSharAH:
     file = open(
-        r"D:\Softwares\Z\jAlAnuprayogaH\src\dattAMsh\{0}.json".format(x),
+        f"{root}\\jAlAnuprayogaH\\src\\dattAMsh\{x}.json",
         mode="w+",
         encoding="utf-8",
     )
@@ -2703,7 +2703,7 @@ for x in akSharAH:
     file.write(d)
     file.close()
     file = open(
-        r"D:\Softwares\Z\saGgaNakAnuprayogaH\resources\others\{0}".format(b64encode(x.encode("ascii")).decode("ascii")),
+        f"{root}\\saGgaNakAnuprayogaH\\resources\\others\\{b64encode(x.encode('ascii')).decode('ascii')}",
         mode="w+",
         encoding="utf-8",
     )
@@ -2723,4 +2723,11 @@ sarve_bhAShA.remove("?")
 s=""
 for x in sarve_bhAShA:
     s+=x
-copy(s)
+s="".join(sorted(s))
+file = open(f"{root}\\saGgaNakAnuprayogaH\\kuJjikopalambhan.py", mode="r+", encoding="utf-8")
+d = file.read().split("#sarve_bhAShA")
+data = f"sarve_bhAShA = \"{s}\""
+file.close()
+file = open(f"{root}\\saGgaNakAnuprayogaH\\kuJjikopalambhan.py", mode="w+", encoding="utf-8")
+file.write(d[0] + "#sarve_bhAShA\n" + data + "\n#sarve_bhAShA" + d[2])
+file.close()

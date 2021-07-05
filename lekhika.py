@@ -52,9 +52,7 @@ class Main:
     def set_lang(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                r"resources/others/{0}".format(
-                    b64encode(lang.encode("ascii")).decode("utf-8")
-                ),
+                f"resources/others/{b64encode(lang.encode('ascii')).decode('utf-8')}",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -221,7 +219,7 @@ class Main:
         if l in ("Urdu", "Romanized", "Kashmiri"):
             self.r.fr_ajay.grid_forget()
         else:
-            self.r.fr_ajay.grid(row=0, column=2, sticky="nw")
+            self.r.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.5, 0))
         self.value_change[0] = True
 
     def open_img(self):
@@ -284,6 +282,18 @@ class Main:
 
 if __name__ == "__main__":
     freeze_support()
+
+    def booster():
+        file = open(
+            f"resources/others/{b64encode(lang_code[2][get_registry('typ_lang')].encode('ascii')).decode('utf-8')}",
+            mode="r",
+            encoding="utf-8",
+        )
+        file.close()
+
+    bs = Thread(target=booster)
+    bs.daemon = True
+    bs.start()
 
     class KeyProcessManager:
         def __init__(self, v):
