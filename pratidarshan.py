@@ -17,11 +17,11 @@ from os import startfile
 from winregistry import WinRegistry
 from dattAMsh import (
     lang_code,
-    DISPLAY_DATA,
     display_lang_lists,
     bhAShAH,
     AJAY,
     bhAShAH_img,
+    display_lang_codes,
 )
 from mouse import get_position
 from threading import Thread
@@ -199,9 +199,9 @@ class pradarshanam:
         self.root.wm_withdraw()
         self.__objs = {}
         self.img_window_status = False
-        sdf = get_registry("language")
-        self.language = StringVar(self.root, display_lang_lists[sdf])
-        self.l_data = DISPLAY_DATA[self.language.get()]
+        sdf = main_obj.darshan
+        self.language = StringVar(self.root, sdf)
+        self.l_data = main_obj.display_data[sdf]
         self.display_values = {}
         self.root.bind("<Control-q>", lambda s: self.open_img())
         for x in self.l_data["values"]:
@@ -803,8 +803,10 @@ class pradarshanam:
                 self.m.update()
 
         self.ex = True
-        a = display_lang_lists.index(self.language.get())
-        self.l_data = DISPLAY_DATA[self.language.get()]
+        lang = self.language.get()
+        a = display_lang_lists.index(lang)
+        self.main_object.load_display_lng(lang)
+        self.l_data = self.main_object.display_data[lang]
         store_registry(a, "language")
         set_text()
         for x in self.__title_properties:
@@ -1081,6 +1083,6 @@ class sahAyikA:
         self.root.after(15000, self.hide)
 
     def set_extra_values(self):
-        l_data = DISPLAY_DATA[display_lang_lists[get_registry("language")]]
+        l_data = self.main.display_data[self.main.darshan]
         self.extra[0].set(l_data["sahAyikA_msg"]["first_sahayika"])
         self.extra[1].set(l_data["sahAyikA_msg"]["second_sahayika"])

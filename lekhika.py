@@ -1,8 +1,6 @@
 from multiprocessing.managers import BaseManager
 from threading import Thread
 from time import sleep
-from tkinter.constants import CENTER
-from typing_extensions import ParamSpecArgs
 from pratidarshan import (
     pradarshanam,
     alert,
@@ -14,8 +12,8 @@ from pratidarshan import (
     ver,
     Tk,
     ttk,
-    DISPLAY_DATA,
     display_lang_lists,
+    display_lang_codes,
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
@@ -30,14 +28,20 @@ from json import loads
 
 class Main:
     def __init__(self):
+        self.loaded = False
         self.ks = get_registry("app_status")
         self.sg_status = bool(get_registry("sg_st"))
         self.msg = set([])
         self.akSharAH = {}
+        self.display_data = {}
         self.loaded_scripts = []
+        self.loaded_display_lng = []
         self.lang_mode = ""
-        self.set_lang(lang_code[2][get_registry("typ_lang")])
+        self.load_typ_lng(lang_code[2][get_registry("typ_lang")])
         self.temp = self.ks
+        self.darshan = ""
+        self.load_display_lng(display_lang_lists[get_registry("language")])
+        self.loaded = True
         self.value_change = [False, False]
         th_tk = Thread(target=self.start_tk, name="TK")
         th_tk.daemon = True
@@ -49,7 +53,7 @@ class Main:
         self.tray = None
         self.sg = sahAyikA(self)
 
-    def set_lang(self, lang):
+    def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
                 f"resources/others/{b64encode(lang.encode('ascii')).decode('utf-8')}",
@@ -60,6 +64,18 @@ class Main:
             file.close()
             self.loaded_scripts.append(lang)
         self.lang_mode = lang
+
+    def load_display_lng(self, lang):
+        if lang not in self.loaded_display_lng:
+            file = open(
+                f"resources/others/{b64encode(display_lang_codes[0][lang].encode('ascii')).decode('utf-8')}",
+                encoding="utf-8",
+                mode="r+",
+            )
+            self.display_data[lang] = loads(file.read())
+            file.close()
+            self.loaded_display_lng.append(lang)
+        self.darshan = lang
 
     def give_startup_msg(self):
         a = AJAY[self.lang_mode]
@@ -78,6 +94,10 @@ class Main:
     def get(self, name, val=0):
         if name == "ks":
             return self.ks
+        elif name == "ready":
+            return self.loaded
+        elif name == "display_data":
+            return self.display_data[self.darshan]
         elif name == "sandesh":
             return self.sandesh
         elif name == "set_val_change":
@@ -130,7 +150,7 @@ class Main:
         elif name == "msg":
             return self.msg
         elif name == "title_text":
-            c = DISPLAY_DATA[display_lang_lists[get_registry("language")]]
+            c = self.display_data[self.darshan]
             d = [c["off"], c["on"]]
             return c["tray"]["title"].format(
                 d[self.ks], c["scripts"][self.lang_mode], d[self.sg_status]
@@ -201,7 +221,7 @@ class Main:
             self.r.typing_lang.set(lang_code[1][l])
         else:
             l = lang_code[0][l]
-        self.set_lang(l)
+        self.load_typ_lng(l)
         self.msg.add("change_lang")
         self.value_change[1] = True
         t = "ajay➠" + AJAY[lang_code[0][self.r.typing_lang.get()]]
@@ -317,16 +337,21 @@ if __name__ == "__main__":
             th = Thread(target=self.start)
             th.daemon = True
             th.start()
+            global tsk
             alert(
-                DISPLAY_DATA[display_lang_lists[get_registry("language")]]["tray"][
-                    "restarted"
-                ],
+                tsk.display["tray"]["restarted"],
                 color="purple",
             )
 
     class TaskBar:
         def init(self, val):
-            self.menu_texts = DISPLAY_DATA[display_lang_lists[get_registry("language")]]
+            gh = False
+            while not gh:
+                try:
+                    gh = val.get("ready")
+                except:
+                    pass
+            self.display = val.get("display_data")
             self.lang = val.get("lang")
             self.ks = val.get("ks")
             self.sg = val.get("sg_status")
@@ -347,35 +372,35 @@ if __name__ == "__main__":
             global key
             return menu(
                 item(
-                    "🔄 " + self.menu_texts["tray"]["restart"],
+                    "🔄 " + self.display["tray"]["restart"],
                     lambda k: key.restart(),
                     checked=lambda item: self.ks == 1,
                     radio=True,
                 ),
                 item(
-                    self.menu_texts["on"],
+                    self.display["on"],
                     lambda k: val.change(True, o=1),
                     checked=lambda item: self.ks == 1,
                     radio=True,
                 ),
                 item(
-                    self.menu_texts["off"],
+                    self.display["off"],
                     lambda k: val.change(True, o=0),
                     checked=lambda item: self.ks == 0,
                     radio=True,
                 ),
                 menu.SEPARATOR,
                 item(
-                    self.menu_texts["values"]["sahayika"],
+                    self.display["values"]["sahayika"],
                     menu(
                         item(
-                            self.menu_texts["on"],
+                            self.display["on"],
                             lambda _: val.exec_taskbar_commands("sg_on"),
                             checked=lambda item: self.sg == True,
                             radio=True,
                         ),
                         item(
-                            self.menu_texts["off"],
+                            self.display["off"],
                             lambda _: val.exec_taskbar_commands("sg_off"),
                             checked=lambda item: self.sg == False,
                             radio=True,
@@ -383,7 +408,7 @@ if __name__ == "__main__":
                     ),
                 ),
                 item(
-                    self.menu_texts["values"]["typing_lang_main"],
+                    self.display["values"]["typing_lang_main"],
                     menu(
                         item(
                             lang_code[1]["Brahmi"],
@@ -535,21 +560,21 @@ if __name__ == "__main__":
                     ),
                 ),
                 item(
-                    self.menu_texts["menu_values"]["encoding_table"],
+                    self.display["menu_values"]["encoding_table"],
                     lambda x: val.open_img(),
                 ),
                 menu.SEPARATOR,
                 item(
-                    "💻" + self.menu_texts["tray"]["show"],
+                    "💻" + self.display["tray"]["show"],
                     lambda _: val.exec_taskbar_commands("show"),
                 ),
-                item("❌ " + self.menu_texts["tray"]["exit"], lambda k: self.close()),
+                item("❌ " + self.display["tray"]["exit"], lambda k: self.close()),
             )
 
         def close(self, k=False):
             if not k:
                 alert(
-                    self.menu_texts["exit_msg"],
+                    self.display["exit_msg"],
                     color="red",
                     lapse=500,
                     geo=True,
@@ -568,9 +593,7 @@ if __name__ == "__main__":
                 elif x == "ks":
                     self.ks = val.get("ks")
                 elif x == "app_lang":
-                    self.menu_texts = DISPLAY_DATA[
-                        display_lang_lists[get_registry("language")]
-                    ]
+                    self.display = self.display = val.get("display_data")
                     self.systray.menu = self.__menu_object()
                     self.systray.title = self.val.get("title_text")
                     self.systray._update_title()
@@ -622,7 +645,8 @@ if __name__ == "__main__":
                     start_file(r"resources\updatewebsite.url")
                 tk.destroy()
 
-            text = DISPLAY_DATA[display_lang_lists[get_registry("language")]]
+            global tsk
+            text = tsk.display
             root = Tk()
             style = ttk.Style(root)
             root.title("")
@@ -648,7 +672,7 @@ if __name__ == "__main__":
             frm1 = ttk.Frame(style="R.TFrame")
             frm1.grid(row=0, column=0, sticky="nw")
             ttk.Label(
-                frm1, text=text["download_msg"], justify=CENTER, style="A.TLabel"
+                frm1, text=text["download_msg"], justify="center", style="A.TLabel"
             ).grid(row=0, column=0, sticky="nw")
             frm = ttk.Frame(frm1)
             ttk.Button(
