@@ -159,18 +159,18 @@ class ToolTip:
         x += self.widget.winfo_rootx() + self.x
         y += self.widget.winfo_rooty() + self.y
         self.win.wm_geometry("+%d+%d" % (x, y))
+        self.chalita_sthiti = True
 
         def show():
             if self.chalita_sthiti:
                 self.win.wm_deiconify()
 
-        self.win.after(200, show)
-        self.chalita_sthiti = True
+        self.win.after(100, show)
 
     def close(self, event=None):
         if self.chalita_sthiti:
-            self.win.wm_withdraw()
             self.chalita_sthiti = False
+            self.win.wm_withdraw()
 
     def update_lekha(self, lekha, lang=None):
         self.text.set(lekha)
@@ -180,6 +180,8 @@ class ToolTip:
             else:
                 size = 10
             self.style.configure(self.name, font=("Nirmala UI", size))
+        else:
+            self.win.wm_deiconify()
 
 
 class pradarshanam:
@@ -229,35 +231,42 @@ class pradarshanam:
         self.root.protocol("WM_DELETE_WINDOW", lambda: self.hide(True))
         self.kAryaM.configure(image=self.image[self.karyAsthiti])
         self.sg_button.configure(image=self.image1[int(main_obj.sg_status)])
-        about_img = ImageTk.PhotoImage(Image.open(r"resources\img\about.png"))
-        convert_img = ImageTk.PhotoImage(Image.open(r"resources\img\convert.png"))
+        about_img = ImageTk.PhotoImage(
+            Image.open(r"resources\img\about.webp").resize((25, 25))
+        )
+        convert_img = ImageTk.PhotoImage(
+            Image.open(r"resources\img\convert.webp").resize((24, 24))
+        )
         self.m.menu.entryconfigure(2, image=self.image[0], selectimage=self.image[1])
         self.m.menu.entryconfigure(3, image=self.image1[0], selectimage=self.image1[1])
         self.m.menu.entryconfigure(4, image=self.image1[0], selectimage=self.image1[1])
         self.m.menu.entryconfigure(8, image=about_img)
         self.m.menu.entryconfigure(7, image=convert_img)
-        fh = ImageTk.PhotoImage(Image.open(r"resources\img\menu.png"))
-        add = ImageTk.PhotoImage(Image.open(r"resources\img\add.png"))
+        fh = ImageTk.PhotoImage(Image.open(r"resources\img\menu.webp").resize((32, 32)))
+        add = ImageTk.PhotoImage(Image.open(r"resources\img\add.webp").resize((15, 15)))
         self.__objs["add_lang"].configure(image=add)
         self.m.configure(image=fh)
         i = ImageTk.PhotoImage(
-            master=self.root, image=Image.open(r"resources\img\usage.png")
+            master=self.root,
+            image=Image.open(r"resources\img\usage.webp").resize((24, 24)),
         )
         self.usage_btn.configure(image=i)
-        lang_img = ImageTk.PhotoImage(Image.open(r"resources\img\lang.png"))
+        lang_img = ImageTk.PhotoImage(
+            Image.open(r"resources\img\lang.webp").resize((26, 24))
+        )
         dfg = ttk.Label(self.top_frame, image=lang_img)
         self.__objs["app_lang_img"] = dfg
         dfg.grid(row=0, column=3, sticky=NW)
+        self.root.update()
+        main_obj.tk_status = True
         if main_obj.window_start_status == 0:
             self.root.wm_deiconify()
             self.root.eval("tk::PlaceWindow . center")
             self.centred = True
             self.root.attributes("-topmost", True)
-            self.root.after(600, lambda: self.root.attributes("-topmost", False))
+            self.root.after(400, lambda: self.root.attributes("-topmost", False))
         else:
             main_obj.give_startup_msg()
-        self.root.update()
-        main_obj.tk_status = True
         self.root.after(1000, self.__titles)
         self.root.mainloop()
 
@@ -445,8 +454,15 @@ class pradarshanam:
     def __input_frame(self):
         command_frame = Frame(self.root)
         self.image = (
-            ImageTk.PhotoImage(Image.open(r"resources\img\off.png")),
-            ImageTk.PhotoImage(Image.open(r"resources\img\on.png")),
+            ImageTk.PhotoImage(
+                Image.open(r"resources\img\off.webp").resize(
+                    (
+                        51,
+                        29,
+                    )
+                )
+            ),
+            ImageTk.PhotoImage(Image.open(r"resources\img\on.webp").resize((51, 29))),
         )
         self.kAryaM = ttk.Label(command_frame)
         self.kAryaM.grid(row=0, column=0, sticky=NW, padx=(0, 25))
@@ -515,8 +531,8 @@ class pradarshanam:
         add.grid(row=0, column=2, sticky=NW, pady=4, padx=(3.3, 6.4))
         self.__objs["add_lang"] = add
         self.image1 = (
-            ImageTk.PhotoImage(Image.open(r"resources\img\off1.png")),
-            ImageTk.PhotoImage(Image.open(r"resources\img\on1.png")),
+            ImageTk.PhotoImage(Image.open(r"resources\img\off1.webp").resize((32, 18))),
+            ImageTk.PhotoImage(Image.open(r"resources\img\on1.webp").resize((32, 18))),
         )
         self.sg_button = ttk.Label(frame)
         self.sg_button.grid(row=0, column=4, sticky=NW, pady=2.5)
@@ -579,7 +595,7 @@ class pradarshanam:
             justify=CENTER,
         ).pack()
         ttk.Label(
-            about, text="Email :- shubhamanandgupta@outlook.com", style="email.TLabel"
+            about, text="Email :- lipilekhika@gmail.com", style="email.TLabel"
         ).pack()
         self.display_values["version"].set(
             self.display_values["version"].get().format(ver)
@@ -600,7 +616,9 @@ class pradarshanam:
         git = ttk.Label(f)
         git.grid(row=0, column=2)
         f.pack()
-        fh = ImageTk.PhotoImage(Image.open(r"resources\img\github.png"))
+        fh = ImageTk.PhotoImage(
+            Image.open(r"resources\img\github.webp").resize((24, 24))
+        )
         git.configure(image=fh)
         git.bind("<Button-1>", lambda s: start_file(r"resources\srota.url"))
 
@@ -611,29 +629,9 @@ class pradarshanam:
             r.wm_withdraw()
             r.resizable(False, False)
             r.iconbitmap(r"resources\Icon.ico")
-            lpo = (
-                "MIT License\n"
-                "\n"
-                "Copyright (c) 2021 Lipi Lekhika (shubhamanandgupta@outlook.com)\n"
-                "\n"
-                "Permission is hereby granted, free of charge, to any person obtaining a copy\n"
-                'of this software and associated documentation files (the "Software"), to deal\n'
-                "in the Software without restriction, including without limitation the rights\n"
-                "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
-                "copies of the Software, and to permit persons to whom the Software is\n"
-                "furnished to do so, subject to the following conditions:\n"
-                "\n"
-                "The above copyright notice and this permission notice shall be included in all\n"
-                "copies or substantial portions of the Software.\n"
-                "\n"
-                'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n'
-                "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
-                "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n"
-                "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n"
-                "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n"
-                "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n"
-                "SOFTWARE."
-            )
+            file = open("resources/others/LICENCE.txt", mode="r+")
+            lpo = file.read()
+            file.close()
             self.style.configure(
                 "LIC.TLabel", font=("Consolas", 12, "bold"), foreground="green"
             )
@@ -858,7 +856,7 @@ class sahAyikA:
         can = Canvas(f2, width=24, height=43, bg="#faf9ae")
         can.pack()
         img = ImageTk.PhotoImage(
-            image=Image.open(r"resources\img\main.png"), master=can
+            image=Image.open(r"resources\img\main.webp").resize((20, 20)), master=can
         )
         can.create_image(3, 24, anchor=NW, image=img)
         f2.grid(row=0, column=0, sticky=NW)
@@ -1083,6 +1081,12 @@ class sahAyikA:
         self.root.after(15000, self.hide)
 
     def set_extra_values(self):
+        gh = False
+        while not gh:
+            try:
+                gh = self.main.get("ready")
+            except:
+                pass
         l_data = self.main.display_data[self.main.darshan]
         self.extra[0].set(l_data["sahAyikA_msg"]["first_sahayika"])
         self.extra[1].set(l_data["sahAyikA_msg"]["second_sahayika"])

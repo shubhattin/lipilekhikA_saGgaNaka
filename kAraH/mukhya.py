@@ -2725,9 +2725,9 @@ for x in sarve_bhAShA:
     s+=x
 s="".join(sorted(s))
 file = open(f"{root}\\saGgaNakAnuprayogaH\\kuJjikopalambhan.py", mode="r+", encoding="utf-8")
-d = file.read().split("#sarve_bhAShA")
+d = file.read().split("# sarve_bhAShA")
 data = f"sarve_bhAShA = \"{s}\""
 file.close()
 file = open(f"{root}\\saGgaNakAnuprayogaH\\kuJjikopalambhan.py", mode="w+", encoding="utf-8")
-file.write(d[0] + "#sarve_bhAShA\n" + data + "\n#sarve_bhAShA" + d[2])
+file.write(d[0] + "# sarve_bhAShA\n" + data + "\n# sarve_bhAShA" + d[2])
 file.close()

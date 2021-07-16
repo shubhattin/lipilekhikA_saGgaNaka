@@ -13,10 +13,11 @@ from mouse import on_click, on_middle_click, on_right_click
 from time import time, sleep
 from threading import Thread
 from base64 import b64encode
-from json import loads
-#sarve_bhAShA
+
+# sarve_bhAShA
 sarve_bhAShA = "#$',-.0123456789;ACDEGHIJKLMNOQRSTUWYabcdefghijklmnopqrstuvwxyz"
-#sarve_bhAShA
+# sarve_bhAShA
+
 
 class kuYjikolambhikam:
     def __init__(self, obj):
@@ -228,7 +229,7 @@ class parivartana:
                 encoding="utf-8",
                 mode="r+",
             )
-            self.akSharAH[lang] = loads(file.read())
+            exec(f"self.akSharAH[lang]={file.read()}")
             file.close()
             self.loaded_scripts.append(lang)
         self.aksharANI = self.akSharAH[lang]

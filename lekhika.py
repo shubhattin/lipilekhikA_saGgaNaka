@@ -23,7 +23,6 @@ from os import startfile
 from urllib.request import urlopen
 from sys import argv
 from base64 import b64encode
-from json import loads
 
 
 class Main:
@@ -60,7 +59,7 @@ class Main:
                 encoding="utf-8",
                 mode="r+",
             )
-            self.akSharAH[lang] = loads(file.read())
+            exec(f"self.akSharAH[lang]={file.read()}")
             file.close()
             self.loaded_scripts.append(lang)
         self.lang_mode = lang
@@ -68,11 +67,11 @@ class Main:
     def load_display_lng(self, lang):
         if lang not in self.loaded_display_lng:
             file = open(
-                f"resources/others/{b64encode(display_lang_codes[0][lang].encode('ascii')).decode('utf-8')}",
+                f"resources/others/{b64encode(display_lang_codes[lang].encode('ascii')).decode('utf-8')}",
                 encoding="utf-8",
                 mode="r+",
             )
-            self.display_data[lang] = loads(file.read())
+            exec(f"self.display_data[lang]={file.read()}")
             file.close()
             self.loaded_display_lng.append(lang)
         self.darshan = lang
@@ -310,6 +309,12 @@ if __name__ == "__main__":
             encoding="utf-8",
         )
         file.close()
+        file = open(
+            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('language')]].encode('ascii')).decode('utf-8')}",
+            mode="r",
+            encoding="utf-8",
+        )
+        file.close()
 
     bs = Thread(target=booster)
     bs.daemon = True
@@ -358,7 +363,7 @@ if __name__ == "__main__":
             menu_options = self.__menu_object()
             self.systray = SysTray(
                 "Lipi Lekhika",
-                Image.open(r"resources\img\main.png"),
+                Image.open(r"resources\img\main.webp"),
                 val.get("title_text"),
                 menu_options,
             )
