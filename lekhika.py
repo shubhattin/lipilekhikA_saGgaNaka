@@ -28,24 +28,24 @@ from base64 import b64encode
 class Main:
     def __init__(self):
         self.loaded = False
-        self.ks = get_registry("app_status")
-        self.sg_status = bool(get_registry("sg_st"))
+        self.ks = get_registry("anuprayogasthiti")
+        self.sg_status = bool(get_registry("lekhanasahAyikA"))
         self.msg = set([])
         self.akSharAH = {}
         self.display_data = {}
         self.loaded_scripts = []
         self.loaded_display_lng = []
         self.lang_mode = ""
-        self.load_typ_lng(lang_code[2][get_registry("typ_lang")])
+        self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
         self.temp = self.ks
         self.darshan = ""
-        self.load_display_lng(display_lang_lists[get_registry("language")])
+        self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
         self.loaded = True
         self.value_change = [False, False]
         th_tk = Thread(target=self.start_tk, name="TK")
         th_tk.daemon = True
         self.sandesh = set([])
-        self.window_start_status = get_registry("window_start")
+        self.window_start_status = get_registry("koShThaprArambha")
         self.tk_status = False
         self.sa_lang = self.akSharAH[self.lang_mode]["く"]
         th_tk.start()
@@ -304,13 +304,13 @@ if __name__ == "__main__":
 
     def booster():
         file = open(
-            f"resources/others/{b64encode(lang_code[2][get_registry('typ_lang')].encode('ascii')).decode('utf-8')}",
+            f"resources/others/{b64encode(lang_code[2][get_registry('lekhanasahAyikA')].encode('ascii')).decode('utf-8')}",
             mode="r",
             encoding="utf-8",
         )
         file.close()
         file = open(
-            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('language')]].encode('ascii')).decode('utf-8')}",
+            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('bhAShAnuprayogaH')]].encode('ascii')).decode('utf-8')}",
             mode="r",
             encoding="utf-8",
         )
@@ -379,7 +379,6 @@ if __name__ == "__main__":
                 item(
                     "🔄 " + self.display["tray"]["restart"],
                     lambda k: key.restart(),
-                    checked=lambda item: self.ks == 1,
                     radio=True,
                 ),
                 item(

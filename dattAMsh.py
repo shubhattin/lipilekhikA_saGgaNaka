@@ -46,7 +46,7 @@ display_lang_codes = {
     "বাংলা": "bn-in",
     "தமிழ்": "ta-in",
     "ಕನ್ನಡ": "kn-in",
-    "संस्कृतम्": "sa",
+    "संस्कृतम्": "sa-in",
 }
 display_lang_lists = tuple(display_lang_codes.keys())
 bhAShAH = []

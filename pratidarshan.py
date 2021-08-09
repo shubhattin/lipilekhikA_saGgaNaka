@@ -28,7 +28,7 @@ from threading import Thread
 from copy import deepcopy
 from PIL import Image, ImageTk
 
-ver = 1.0
+ver = 1.1
 lengths = [[], []]
 for x in range(0, len(lang_code[2])):
     lengths[1].append(x)
@@ -45,35 +45,42 @@ def start_file(f):
     a.start()
 
 
+reg = WinRegistry()
+path = ["", "LipiLekhikAvikalpAni"]
+path[0] = f"HKCU\\SOFTWARE\\{path[1]}"
+
+
 def get_registry(name):
-    reg = WinRegistry()
-    path = r"HKCU\SOFTWARE\lekhika"
+    global reg, path
     try:
-        a = int(reg.read_value(path, name)["data"])
+        a = int(reg.read_value(path[0], name)["data"])
         err = False
-        if name in ("app_status", "sa_mode", "sg_st", "window_start") and a not in (
+        if name in (
+            "anuprayogasthiti",
+            "lekhanasahAyikA",
+            "koShThaprArambha",
+        ) and a not in (
             0,
             1,
         ):
             err = True
-        elif name == "language" and (a not in lengths[0]):
+        elif name == "bhAShAnuprayogaH" and (a not in lengths[0]):
             err = True
-        elif name == "typ_lang" and (a not in lengths[1]):
+        elif name == "lekhanbhAShA" and (a not in lengths[1]):
             err = True
         if err:
             raise FileNotFoundError
         return a
     except:
-        store_registry(0 if name != "sg_st" else 1, name)
+        store_registry(0 if name != "lekhanasahAyikA" else 1, name)
         return get_registry(name)
 
 
 def store_registry(value, name):
-    reg = WinRegistry()
-    path = r"HKCU\SOFTWARE\lekhika"
-    if "lekhika" not in reg.read_key(r"HKCU\SOFTWARE")["keys"]:
-        reg.create_key(path)
-    reg.write_value(path, name, str(value).encode("ascii"), "REG_BINARY")
+    global reg, path
+    if path[1] not in reg.read_key("HKCU\\SOFTWARE")["keys"]:
+        reg.create_key(path[0])
+    reg.write_value(path[0], name, str(value).encode("ascii"), "REG_BINARY")
 
 
 def alert(msg, color, AkAra=19, geo=None, lapse=0, wait=False, bg=None):
@@ -95,6 +102,7 @@ def alert(msg, color, AkAra=19, geo=None, lapse=0, wait=False, bg=None):
             )
         sd = ttk.Label(a, text=msg, style="A.TLabel", justify=CENTER)
         sd.pack()
+        master.attributes("-alpha", 0.9)
         a.pack()
         master.title("")
         if geo == None:
@@ -120,7 +128,6 @@ class ToolTip:
         self.widget = widget
         self.name = name + ".TLabel"
         self.x = x
-        self.root = root
         self.y = y
         if x == -1:
             self.x = 25
@@ -130,7 +137,7 @@ class ToolTip:
             size = 9
         else:
             size = 10
-        self.win = Toplevel(self.root)
+        self.win = Toplevel(root)
         self.win.wm_withdraw()
         self.style = ttk.Style(self.win)
         self.style.configure(
@@ -153,6 +160,7 @@ class ToolTip:
         self.chalita_sthiti = False
         widget.bind("<Enter>", self.enter)
         widget.bind("<Leave>", self.close)
+        self.win.attributes("-alpha", 0.82)
 
     def enter(self, event=None):
         x = y = 0
@@ -180,7 +188,7 @@ class ToolTip:
             else:
                 size = 10
             self.style.configure(self.name, font=("Nirmala UI", size))
-        else:
+        elif self.chalita_sthiti:
             self.win.wm_deiconify()
 
 
@@ -246,6 +254,7 @@ class pradarshanam:
         add = ImageTk.PhotoImage(Image.open(r"resources\img\add.webp").resize((15, 15)))
         self.__objs["add_lang"].configure(image=add)
         self.m.configure(image=fh)
+        self.github_obj = 0
         i = ImageTk.PhotoImage(
             master=self.root,
             image=Image.open(r"resources\img\usage.webp").resize((24, 24)),
@@ -267,7 +276,7 @@ class pradarshanam:
             self.root.after(400, lambda: self.root.attributes("-topmost", False))
         else:
             main_obj.give_startup_msg()
-        self.root.after(1000, self.__titles)
+        self.root.after(10, self.__titles)
         self.root.mainloop()
 
     def __titles(self):
@@ -375,7 +384,7 @@ class pradarshanam:
                     lang_code[2].index(
                         lang_code[0][self.option_values["typing"].get()]
                     ),
-                    "typ_lang",
+                    "lekhanbhAShA",
                 ),
             )
         self.m.menu.add_cascade(
@@ -392,7 +401,7 @@ class pradarshanam:
             background="#e8f5bf",
             foreground="green",
             command=lambda: store_registry(
-                self.option_values["app"].get(), "app_status"
+                self.option_values["app"].get(), "anuprayogasthiti"
             ),
         )
         self.m.menu.add_checkbutton(
@@ -404,7 +413,9 @@ class pradarshanam:
             activeforeground="yellow",
             background="#e8f5bf",
             foreground="blue",
-            command=lambda: store_registry(self.option_values["sg"].get(), "sg_st"),
+            command=lambda: store_registry(
+                self.option_values["sg"].get(), "lekhanasahAyikA"
+            ),
         )
         self.m.menu.add_checkbutton(
             label=self.menu_values["startup"],
@@ -418,7 +429,7 @@ class pradarshanam:
             foreground="brown",
             indicatoron=False,
             command=lambda: store_registry(
-                self.option_values["startup"].get(), "window_start"
+                self.option_values["startup"].get(), "koShThaprArambha"
             ),
         )
         self.m.menu.add_separator()
@@ -492,6 +503,30 @@ class pradarshanam:
             command=self.update_sans_mode,
         )
         saon.grid(row=0, column=1, sticky=NW)
+        # saon.bind(
+        #     "<Enter>",
+        #     lambda x: self.style.configure(
+        #         "SA.TRadioButton", foreground="red"
+        #     )
+        # )
+        # saon.bind(
+        #     "<Leave>",
+        #     lambda x: self.style.configure(
+        #         "SA.TRadioButton", foreground="black"
+        #     )
+        # )
+        # saoff.bind(
+        #     "<Enter>",
+        #     lambda x: self.style.configure(
+        #         "SA.TRadioButton", font=("Nirmala UI", 10, "bold")
+        #     )
+        # )
+        # saoff.bind(
+        #     "<Leave>",
+        #     lambda x: self.style.configure(
+        #         "SA.TRadioButton", font=("Nirmala UI", 9, "bold")
+        #     )
+        # )
         if self.main_object.lang_mode not in ("Urdu", "Romanized", "Kashmiri"):
             self.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.8, 0))
         command_frame.grid(row=2, column=0, sticky=NW)
@@ -547,11 +582,30 @@ class pradarshanam:
             frame, textvariable=self.display_values["sahayika"], style="sah.TLabel"
         )
         hl.grid(row=0, column=5, sticky=NW)
+        hl_color = ["blue", "#ff4500"]
+        hl.bind(
+            "<Enter>",
+            lambda x: self.style.configure(
+                "sah.TLabel", font=("Nirmala UI", 12, "bold"), foreground=hl_color[1]
+            ),
+        )
+
+        def lv(x):
+
+            lk = lambda: self.style.configure(
+                "sah.TLabel", font=("Nirmala UI", 11, "bold"), foreground=hl_color[0]
+            )
+            lk()
+            self.root.after(10, lk)
+            self.root.after(460, lk)
+
+        hl.bind("<Leave>", lv)
 
         def sg_label_click():
-            self.style.configure("sah.TLabel", foreground="black")
+            color = ["green", "black"][int(self.main_object.sg_status)]
+            self.style.configure("sah.TLabel", foreground=color)
             self.root.after(
-                300, lambda: self.style.configure("sah.TLabel", foreground="blue")
+                450, lambda: self.style.configure("sah.TLabel", foreground=hl_color[1])
             )
             self.main_object.exec_taskbar_commands("sg", False)
 
@@ -621,6 +675,15 @@ class pradarshanam:
         )
         git.configure(image=fh)
         git.bind("<Button-1>", lambda s: start_file(r"resources\srota.url"))
+        self.github_obj = ToolTip(
+            "GitHub",
+            self.root,
+            git,
+            self.l_data["title"]["github"],
+            -270,
+            28,
+            self.language.get(),
+        )
 
         def pratyAdesham():
             r = Toplevel(about)
@@ -805,7 +868,7 @@ class pradarshanam:
         a = display_lang_lists.index(lang)
         self.main_object.load_display_lng(lang)
         self.l_data = self.main_object.display_data[lang]
-        store_registry(a, "language")
+        store_registry(a, "bhAShAnuprayogaH")
         set_text()
         for x in self.__title_properties:
             if x in self.__dynamic_titles:
@@ -818,6 +881,12 @@ class pradarshanam:
         self.display_values["version"].set(
             self.display_values["version"].get().format(ver)
         )
+        try:
+            self.github_obj.update_lekha(
+                self.l_data["title"]["github"], self.language.get()
+            )
+        except AttributeError:
+            pass
         self.root.update()
         self.main_object.sandesh.add("app_lang")
         self.main_object.value_change[0] = True
@@ -1033,7 +1102,11 @@ class sahAyikA:
             if b[key][-1] == 3:
                 l12 = l12[:-2] + l12[-1] + l12[-2]
             self.key[1].set(l12)
+        extra = 0
         for x in a:
+            if matra and a[x][-1] in [1, 2]:
+                extra += 1
+                continue
             self.next[c].set(x)
             k = a[x][0]
             if a[x][-1] == 0 and self.pUrvavarNa[0][-1] in [1, 3]:
@@ -1048,8 +1121,9 @@ class sahAyikA:
                     k = k[:-2] + k[-1] + k[-2]
             self.varna[c].set(k)
             c += 1
-        if len(a) - 1 > self.f_count + 1:
-            for x in range(self.f_count + 1, len(a)):
+        len_a = len(a) - extra
+        if len_a - 1 > self.f_count + 1:
+            for x in range(self.f_count + 1, len_a):
                 self.f[x] = Frame(self.frame, bg="#faf9ae")
                 ttk.Label(
                     self.f[x],
@@ -1064,7 +1138,7 @@ class sahAyikA:
                     justify=CENTER,
                 ).pack()
                 self.f[x].grid(row=0, column=x + 1, sticky=NW)
-            self.f_count = len(a) - 1
+            self.f_count = len_a - 1
         for x in range(c, 13):
             self.next[x].set("")
             self.varna[x].set("")

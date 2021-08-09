@@ -363,7 +363,7 @@ d = d.replace(': "', ':"')
 d = d.replace(', "', ',"')
 d = d.replace(": {", ":{")
 file = open(
-    f"{root}\\jAlAnuprayogaH\\src\\dattAMsh\\antar.json",
+    f"{root}\\jAlAnuprayogaH\\src\\src\\dattAMsh\\antar.json",
     mode="w+",
     encoding="utf-8",
 )

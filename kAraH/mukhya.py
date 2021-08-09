@@ -2691,7 +2691,7 @@ file.close()
 from base64 import b64encode
 for x in akSharAH:
     file = open(
-        f"{root}\\jAlAnuprayogaH\\src\\dattAMsh\{x}.json",
+        f"{root}\\jAlAnuprayogaH\\src\\src\\dattAMsh\{x}.json",
         mode="w+",
         encoding="utf-8",
     )
