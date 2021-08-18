@@ -223,7 +223,7 @@ class parivartana:
     def set_typing_lang(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                r"resources/others/{0}".format(
+                r"resources/others/{0}.json".format(
                     b64encode(lang.encode("ascii")).decode("utf-8")
                 ),
                 encoding="utf-8",

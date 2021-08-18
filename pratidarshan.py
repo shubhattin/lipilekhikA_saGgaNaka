@@ -155,7 +155,7 @@ class ToolTip:
             borderwidth=1.7,
             style=self.name,
         )
-        label.pack(ipadx=1)
+        label.pack(ipadx=2)
         self.win.wm_overrideredirect(True)
         self.chalita_sthiti = False
         widget.bind("<Enter>", self.enter)
@@ -256,10 +256,13 @@ class pradarshanam:
         self.m.configure(image=fh)
         self.github_obj = 0
         i = ImageTk.PhotoImage(
-            master=self.root,
-            image=Image.open(r"resources\img\usage.webp").resize((24, 24)),
+            image=Image.open(r"resources\img\usage.webp").resize((24, 24))
         )
         self.usage_btn.configure(image=i)
+        k = ImageTk.PhotoImage(
+            image=Image.open(r"resources\img\minimize.webp").resize((28, 28))
+        )
+        self.bac.configure(image=k)
         lang_img = ImageTk.PhotoImage(
             Image.open(r"resources\img\lang.webp").resize((26, 24))
         )
@@ -312,6 +315,43 @@ class pradarshanam:
                 self.language.get(),
             )
 
+    def __mini_lekhika(self):
+        win = Toplevel(self.root)
+        self.__mini = win
+        img = {
+            "max": ImageTk.PhotoImage(
+                Image.open(r"resources\img\maximize.webp").resize((30, 30))
+            ),
+            "drag": ImageTk.PhotoImage(
+                Image.open(r"resources\img\drag.webp").resize((20, 20))
+            ),
+        }
+        win.geometry("+700+400")
+        win.wm_overrideredirect(True)
+        win.attributes("-topmost", True)
+        win.attributes("-alpha", 0.85)
+        fr = Frame(win)
+        dr = ttk.Label(fr, image=img["drag"])
+        dr.pack(padx=5, side="left")
+        max = ttk.Label(fr, image=img["max"])
+        max.pack(padx=5, side="left")
+        self.org = [0, 0]
+
+        def drag(t, record=False):
+            if record:
+                self.org = t.x, t.y
+            else:
+                x, y = t.x, t.y
+                x += win.winfo_rootx() - self.org[0]
+                y += win.winfo_rooty() - self.org[1]
+                win.geometry(f"+{x}+{y}")
+
+        dr.bind("<Button-1>", lambda s: drag(s, True))
+        dr.bind("<B1-Motion>", drag)
+        max.bind("<Button-1>", self.show)
+        fr.pack(side="right")
+        win.mainloop()
+
     def __top_frame(self):
         self.top_frame = Frame(self.root)
         self.style.configure(
@@ -323,7 +363,7 @@ class pradarshanam:
         self.usage_btn = ttk.Label(self.top_frame, compound="left")
         self.__objs["usage"] = self.usage_btn
         self.usage_btn.bind("<Button-1>", lambda s: self.open_img())
-        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0))
+        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0), pady=(2.5, 0))
         ad = list(deepcopy(display_lang_lists))[::-1]
         ad.append("")
         ad = ad[::-1]
@@ -341,21 +381,10 @@ class pradarshanam:
         frame1.grid(row=0, column=4, stick=NW, padx=(0, 25), pady=(1.5, 0))
         self.__objs["app_lang_option"] = frame1
         bhASA["menu"].config(font=("Nirmala UI", (8), "bold"), fg="red")
-        self.style.configure(
-            "A.TButton",
-            font=("Nirmala UI", 9, "bold"),
-            foreground="red",
-            background="black",
-        )
-        bac = ttk.Button(
-            self.top_frame,
-            style="A.TButton",
-            compound="left",
-            textvariable=self.display_values["background_run"],
-            command=self.hide,
-        )
-        bac.grid(row=0, column=6, sticky="ne", padx=(0, 19.5))
-        self.__objs["background"] = bac
+        self.bac = ttk.Label(self.top_frame)
+        self.bac.bind("<Button-1>", lambda s: self.hide())
+        self.bac.grid(row=0, column=6, sticky="ne", padx=(65, 19.5), pady=(1.5, 0))
+        self.__objs["background"] = self.bac
         self.top_frame.grid(row=0, sticky=NW)
         self.__menu_kAraH()
 
@@ -465,14 +494,7 @@ class pradarshanam:
     def __input_frame(self):
         command_frame = Frame(self.root)
         self.image = (
-            ImageTk.PhotoImage(
-                Image.open(r"resources\img\off.webp").resize(
-                    (
-                        51,
-                        29,
-                    )
-                )
-            ),
+            ImageTk.PhotoImage(Image.open(r"resources\img\off.webp").resize((51, 29))),
             ImageTk.PhotoImage(Image.open(r"resources\img\on.webp").resize((51, 29))),
         )
         self.kAryaM = ttk.Label(command_frame)
@@ -772,8 +794,8 @@ class pradarshanam:
             style="B.TMenubutton",
             command=lambda _: sUchI.configure(image=image_collection[lang.get()]),
         )
-        bhASAd.grid(row=0, column=0, stick=NW)
-        frame1.grid(row=0, column=0, stick=NW)
+        bhASAd.grid(row=0, column=0, stick=NW, ipadx=10)
+        frame1.grid(row=0, column=0, stick=NW, padx=(10, 150), pady=(5, 0))
         bhASAd["menu"].config(font=("Nirmala UI", (10), "bold"), fg="red", bg="#faf9ae")
         ck_btn = IntVar(self.img_win, 0)
         Checkbutton(
@@ -821,22 +843,19 @@ class pradarshanam:
                 self.main_object.sandesh.add("close")
                 self.main_object.value_change[0] = True
             else:
-                alert(
-                    self.l_data["hide2"],
-                    color="purple",
-                    lapse=1800,
-                    geo=True,
-                    AkAra=13,
-                )
+                self.__mini_lekhika()
 
-    def display(self, t):
-        if t == "show":
-            self.root.wm_deiconify()
-            if not self.centred:
-                self.root.after(20, lambda: self.root.eval("tk::PlaceWindow . center"))
-                self.centred = True
-            self.root.attributes("-topmost", True)
-            self.root.after(1300, lambda: self.root.attributes("-topmost", False))
+    def show(self, e=None):
+        self.root.wm_deiconify()
+        try:
+            self.__mini.destroy()
+        except AttributeError:
+            pass
+        if not self.centred:
+            self.root.after(20, lambda: self.root.eval("tk::PlaceWindow . center"))
+            self.centred = True
+        self.root.attributes("-topmost", True)
+        self.root.after(1300, lambda: self.root.attributes("-topmost", False))
 
     def update_lang_data(self, event):
         def set_text():

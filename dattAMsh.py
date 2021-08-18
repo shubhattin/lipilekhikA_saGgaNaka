@@ -1,3 +1,6 @@
+# Both the Typing language database and Display Language Databses are store in "resources/others". Thier names are in base64
+
+
 def antaH_parivartan(js):
     ret = {}
     for k in js:
@@ -83,4 +86,3 @@ AJAY = {
     "Sharada": "अजय्",
     "Modi": "अजय्",
 }
-# Both the Typing language database and Display Language Databses are store in "resources/others". Thier names are in base64

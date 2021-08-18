@@ -55,7 +55,7 @@ class Main:
     def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                f"resources/others/{b64encode(lang.encode('ascii')).decode('utf-8')}",
+                f"resources/others/{b64encode(lang.encode('ascii')).decode('utf-8')}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -67,7 +67,7 @@ class Main:
     def load_display_lng(self, lang):
         if lang not in self.loaded_display_lng:
             file = open(
-                f"resources/others/{b64encode(display_lang_codes[lang].encode('ascii')).decode('utf-8')}",
+                f"resources/others/{b64encode(display_lang_codes[lang].encode('ascii')).decode('utf-8')}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -168,7 +168,7 @@ class Main:
 
     def exec_taskbar_commands(self, n, m=True):
         if n == "show":
-            self.r.display("show")
+            self.r.show()
         elif n == "sg":
             self.sg_status = not self.sg_status
             self.msg.add("sg")
@@ -304,13 +304,13 @@ if __name__ == "__main__":
 
     def booster():
         file = open(
-            f"resources/others/{b64encode(lang_code[2][get_registry('lekhanasahAyikA')].encode('ascii')).decode('utf-8')}",
+            f"resources/others/{b64encode(lang_code[2][get_registry('lekhanasahAyikA')].encode('ascii')).decode('utf-8')}.json",
             mode="r",
             encoding="utf-8",
         )
         file.close()
         file = open(
-            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('bhAShAnuprayogaH')]].encode('ascii')).decode('utf-8')}",
+            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('bhAShAnuprayogaH')]].encode('ascii')).decode('utf-8')}.json",
             mode="r",
             encoding="utf-8",
         )
