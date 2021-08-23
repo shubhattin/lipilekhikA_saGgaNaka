@@ -97,6 +97,18 @@ class Main:
             return self.loaded
         elif name == "display_data":
             return self.display_data[self.darshan]
+        elif name == "clicked":
+            return self.sg.varna_clicked
+        elif name == "img_pressed":
+            return self.sg.image_pressed
+        elif name == "reset_img_pressed":
+            self.sg.image_pressed = False
+        elif name == "varna_pressed":
+            return self.sg.varna_clicked_st
+        elif name == "reset_varna_pressed":
+            self.sg.varna_clicked_st = False
+        elif name == "reset_no_procedure":
+            self.sg.no_procedure = False
         elif name == "sandesh":
             return self.sandesh
         elif name == "set_val_change":

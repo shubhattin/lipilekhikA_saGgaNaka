@@ -19,6 +19,12 @@ sarve_bhAShA = "#$',-.0123456789;ACDEGHIJKLMNOQRSTUWYabcdefghijklmnopqrstuvwxyz"
 # sarve_bhAShA
 
 
+class varna:
+    def __init__(self, v, t):
+        self.name = v
+        self.time = time()
+
+
 class kuYjikolambhikam:
     def __init__(self, obj):
         self.obj = obj
@@ -30,6 +36,7 @@ class kuYjikolambhikam:
         self.shortcut_press = False
         self.start_all_listeners()
         self.single_alt = True
+        self.vrn = varna("", -1)
         th = Thread(target=self.__check_value_updates)
         th.daemon = True
         th.start()
@@ -76,9 +83,9 @@ class kuYjikolambhikam:
         for x in sarve_bhAShA:
             on_press_key(x, self.process_key, suppress=True)
         on_press(self.detect_key)
-        on_click(lambda: self.clear_all_val(True))
-        on_middle_click(lambda: self.clear_all_val(True))
-        on_right_click(lambda: self.clear_all_val(True))
+        on_click(lambda: self.clear(mouse=True))
+        on_middle_click(lambda: self.clear(mouse=True))
+        on_right_click(lambda: self.clear(mouse=True))
 
     def on_release(self, c):
         self.single_alt = True
@@ -99,7 +106,7 @@ class kuYjikolambhikam:
             and self.ks == 1
         ):
             send_keys("backspace")
-            self.clear_all_val()
+            self.clear()
         elif (
             self.ks == 1
             and self.main.current_lang_code in ("Urdu", "Kashmiri")
@@ -107,11 +114,11 @@ class kuYjikolambhikam:
         ):
             send_keys("backspace")
             write(self.main.aksharANI[key][key][0])
-            self.clear_all_val(True)
+            self.clear()
         elif "shift" in key or "caps" in key or self.modifier_press_status[0]:
             more = False
         else:
-            self.clear_all_val()
+            self.clear()
         if key in all_modifiers and not self.modifier_press_status[0]:
             self.modifier_press_status = (True, key, tm)
         if self.main.sg_status and self.main.sg and self.ks == 1 and more:
@@ -130,30 +137,32 @@ class kuYjikolambhikam:
         self.t = 0
         t = self.time_elphased(key.time)
         if t > 15:
-            self.clear_all_val()
+            self.clear()
         key = key.name if not already_ready else key
         if len(key) > 1:
             send_keys(key)
             if self.ks == 1:
-                self.clear_all_val(True)
+                self.clear()
         elif (
             self.modifier_press_status[0]
             and "shift" not in self.modifier_press_status[1]
         ):
             self.shortcut_press = True
             press_and_release(key)
-            self.clear_all_val(True)
+            self.clear()
         elif self.ks == 0:
             send_keys(key)
         else:
             self.main.prakriyA(key)
 
-    def clear_all_val(self, mo=False):
-        if mo:
-            self.update()
-            if self.main.sg_status and self.main.sg:
-                self.get("hide_sg")
-                self.main.sg_status = False
+    def clear(self, mouse=False):
+        if mouse:
+            if self.get("img_pressed"):
+                self.get("reset_img_pressed")
+                return
+            elif self.get("varna_pressed"):
+                self.get("reset_varna_pressed")
+                return
         if self.ks == 0:
             return
         self.main.clear_all_val(True)
@@ -168,7 +177,7 @@ class kuYjikolambhikam:
                 if self.ks == 1:
                     self.t = 0
             elif x == "clear_vals":
-                self.clear_all_val()
+                self.clear()
             elif x == "change_lang":
                 self.main.set_typing_lang(self.get("lang"))
             elif x == "update_sa":
@@ -177,6 +186,17 @@ class kuYjikolambhikam:
                 self.main.sg = not self.main.sg
             elif x == "clear_sg":
                 self.main.capital = [0, "", -1, -1, 0, 0, False]
+            elif x == "clicked":
+                val = self.get("clicked")
+                l = len(val)
+                v = 0
+                for y in val:
+                    v += 1
+                    if v == l:
+                        self.get("reset_no_procedure")
+                    self.vrn.name = y
+                    self.vrn.time = time()
+                    self.process_key(self.vrn)
         self.get("null_msg")
 
 
@@ -536,6 +556,7 @@ class parivartana:
         if special:
             self.store_last_of_3 = ""
             self.pUrva_lekhit = [["", -1], ["", -1], ["", -1], ["", -1], ["", -1]]
+            self.main.get("hide_sg")
             self.main.get("clear_sg_val")
             self.capital = [0, "", -1, -1, 0, 0, False]
 

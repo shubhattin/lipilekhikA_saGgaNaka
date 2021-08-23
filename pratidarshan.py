@@ -1,5 +1,5 @@
+from time import sleep
 from tkinter import (
-    Canvas,
     Frame,
     IntVar,
     Menu,
@@ -28,7 +28,7 @@ from threading import Thread
 from copy import deepcopy
 from PIL import Image, ImageTk
 
-ver = 1.1
+ver = 1.15
 lengths = [[], []]
 for x in range(0, len(lang_code[2])):
     lengths[1].append(x)
@@ -317,25 +317,33 @@ class pradarshanam:
 
     def __mini_lekhika(self):
         win = Toplevel(self.root)
+        win.wm_withdraw()
         self.__mini = win
         img = {
             "max": ImageTk.PhotoImage(
-                Image.open(r"resources\img\maximize.webp").resize((30, 30))
+                Image.open(r"resources\img\maximize.webp").resize((28, 28))
             ),
             "drag": ImageTk.PhotoImage(
                 Image.open(r"resources\img\drag.webp").resize((20, 20))
             ),
+            "close": ImageTk.PhotoImage(
+                Image.open(r"resources\img\close.webp").resize((24, 24))
+            ),
         }
-        win.geometry("+700+400")
+        self.root.eval(f"tk::PlaceWindow {str(win)} center")
+        win.geometry(f"+{win.winfo_rootx()}+{50}")
         win.wm_overrideredirect(True)
         win.attributes("-topmost", True)
-        win.attributes("-alpha", 0.85)
-        fr = Frame(win)
-        dr = ttk.Label(fr, image=img["drag"])
-        dr.pack(padx=5, side="left")
-        max = ttk.Label(fr, image=img["max"])
-        max.pack(padx=5, side="left")
+        win.attributes("-alpha", 0.88)
+        fr = Frame(win, bg="white")
+        dr = ttk.Label(fr, image=img["drag"], background="white")
+        dr.grid(row=0, column=8, padx=5)
+        max = ttk.Label(fr, image=img["max"], background="white")
+        max.grid(row=0, column=10)
         self.org = [0, 0]
+        close = ttk.Label(fr, image=img["close"], background="white", cursor="target")
+        close.grid(row=0, column=11, padx=(7, 0))
+        close.bind("<Button-1>", lambda s: self.hide(bac=True))
 
         def drag(t, record=False):
             if record:
@@ -349,11 +357,21 @@ class pradarshanam:
         dr.bind("<Button-1>", lambda s: drag(s, True))
         dr.bind("<B1-Motion>", drag)
         max.bind("<Button-1>", self.show)
+
+        def change_color(t):
+            if t == 0:
+                max.configure(background="yellow")
+            elif t == 1:
+                max.configure(background="white")
+
+        max.bind("<Enter>", lambda h: change_color(0))
+        max.bind("<Leave>", lambda h: change_color(1))
         fr.pack(side="right")
+        win.wm_deiconify()
         win.mainloop()
 
     def __top_frame(self):
-        self.top_frame = Frame(self.root)
+        self.top_frame = ttk.Frame(self.root)
         self.style.configure(
             "B.TMenubutton",
             font=("Nirmala UI", 8, "bold"),
@@ -363,7 +381,7 @@ class pradarshanam:
         self.usage_btn = ttk.Label(self.top_frame, compound="left")
         self.__objs["usage"] = self.usage_btn
         self.usage_btn.bind("<Button-1>", lambda s: self.open_img())
-        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0), pady=(2.5, 0))
+        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0), pady=(1, 0))
         ad = list(deepcopy(display_lang_lists))[::-1]
         ad.append("")
         ad = ad[::-1]
@@ -380,10 +398,11 @@ class pradarshanam:
         bhASA.grid(row=0, column=0, stick=NW)
         frame1.grid(row=0, column=4, stick=NW, padx=(0, 25), pady=(1.5, 0))
         self.__objs["app_lang_option"] = frame1
+        self.style.configure("MX1.TLabel", background="white")
         bhASA["menu"].config(font=("Nirmala UI", (8), "bold"), fg="red")
         self.bac = ttk.Label(self.top_frame)
-        self.bac.bind("<Button-1>", lambda s: self.hide())
         self.bac.grid(row=0, column=6, sticky="ne", padx=(65, 19.5), pady=(1.5, 0))
+        self.bac.bind("<Button-1>", lambda s: self.hide())
         self.__objs["background"] = self.bac
         self.top_frame.grid(row=0, sticky=NW)
         self.__menu_kAraH()
@@ -492,7 +511,7 @@ class pradarshanam:
         self.m.grid(row=0, column=0, sticky="n")
 
     def __input_frame(self):
-        command_frame = Frame(self.root)
+        command_frame = ttk.Frame(self.root)
         self.image = (
             ImageTk.PhotoImage(Image.open(r"resources\img\off.webp").resize((51, 29))),
             ImageTk.PhotoImage(Image.open(r"resources\img\on.webp").resize((51, 29))),
@@ -506,7 +525,7 @@ class pradarshanam:
         self.style.configure(
             "SA.TRadiobutton", font=("Nirmala UI", 9, "bold"), background="lightblue"
         )
-        self.fr_ajay = Frame(command_frame)
+        self.fr_ajay = ttk.Frame(command_frame)
         saoff = ttk.Radiobutton(
             self.fr_ajay,
             textvariable=self.ajay_texts[0],
@@ -836,12 +855,21 @@ class pradarshanam:
         self.img_win.after(2300, lambda: self.img_win.attributes("-topmost", False))
         self.root.after(20, lambda: self.img_win.mainloop())
 
-    def hide(self, event=None):
+    def hide(self, event=None, bac=False):
         self.root.wm_withdraw()
         if self.main_object.tk_status:
             if event == True:
                 self.main_object.sandesh.add("close")
                 self.main_object.value_change[0] = True
+            elif bac:
+                self.__mini.wm_withdraw()
+                alert(
+                    self.l_data["hide2"],
+                    color="purple",
+                    lapse=1800,
+                    geo=True,
+                    AkAra=13,
+                )
             else:
                 self.__mini_lekhika()
 
@@ -919,61 +947,72 @@ class sahAyikA:
         self.c = 0
         self.d = 0
         self.main = m
-        self.closed = True
 
     def __start(self):
-        self.root = Tk()
-        self.extra = [StringVar(self.root), StringVar(self.root)]
-        self.set_extra_values()
-        self.root.wm_withdraw()
-        self.root.configure(bg="#faf9ae")
-        self.root.attributes("-topmost", True)
-        self.key = [StringVar(self.root), StringVar(self.root)]
-        self.next = []
-        self.varna = []
-        self.reset_capital_status = False
-        for x in range(0, 60):
-            self.next.append(StringVar(self.root, value=""))
-            self.varna.append(StringVar(self.root, value=""))
-        self.root.wm_overrideredirect(True)
-        self.root.update()
-        f = Frame(self.root, bg="#faf9ae")
+        def init():
+            self.root = Tk()
+            self.extra = [StringVar(self.root), StringVar(self.root)]
+            self.set_extra_values()
+            self.root.wm_withdraw()
+            self.root.attributes("-topmost", True)
+            self.key = [StringVar(self.root), StringVar(self.root)]
+            self.next = []
+            self.varna = []
+            self.reset_capital_status = False
+            for x in range(0, 60):
+                self.next.append(StringVar(self.root, value=""))
+                self.varna.append(StringVar(self.root, value=""))
+            self.root.wm_overrideredirect(True)
+            self.root.update()
+
+        init()
+        up = Frame(self.root, highlightbackground="black", highlightthickness=1.5)
+        up.pack(ipadx=4)
+        f = Frame(up)
         f.grid(row=0, column=0, sticky=NW)
         style = ttk.Style(self.root)
-        f2 = Frame(f, bg="#faf9ae")
-        can = Canvas(f2, width=24, height=43, bg="#faf9ae")
-        can.pack()
+        f2 = Frame(f)
         img = ImageTk.PhotoImage(
-            image=Image.open(r"resources\img\main.webp").resize((20, 20)), master=can
+            image=Image.open(r"resources\img\main.webp").resize((23, 23)), master=f2
         )
-        can.create_image(3, 24, anchor=NW, image=img)
-        f2.grid(row=0, column=0, sticky=NW)
-        self.frame = Frame(f, bg="#faf9ae")
-        style.configure(
-            "A.TLabel",
-            font=("Nirmala UI", 18, "bold"),
-            foreground="brown",
-            background="#faf9ae",
-        )
-        style.configure(
-            "B.TLabel",
-            font=("Nirmala UI", 13, "bold"),
-            foreground="red",
-            background="#faf9ae",
-        )
-        style.configure(
-            "C.TLabel",
-            font=("Nirmala UI", 15, "bold"),
-            foreground="black",
-            background="#faf9ae",
-        )
-        style.configure(
-            "D.TLabel",
-            font=("Nirmala UI", 15, "bold"),
-            foreground="green",
-            background="#faf9ae",
-        )
-        frm = Frame(self.frame, bg="#faf9ae")
+        self.arrow_up = True
+        i = {
+            True: ImageTk.PhotoImage(
+                image=Image.open(r"resources\img\down-arrow.webp").resize((21, 21)),
+                master=f2,
+            ),
+            False: ImageTk.PhotoImage(
+                image=Image.open(r"resources\img\up-arrow.webp").resize((21, 21)),
+                master=f2,
+            ),
+        }
+        style.configure("IMG.TLabel")
+        ttk.Label(f2, image=img, style="IMG.TLabel").grid(row=0, column=0, pady=(8, 0))
+        img_lbl = ttk.Label(f2, style="IMG.TLabel", cursor="target")
+        img_lbl.grid(row=1, column=0, pady=(3, 0), padx=(2, 0))
+        img_lbl.configure(image=i[self.arrow_up])
+        self.image_pressed = False
+        self.varna_clicked = ""
+        self.no_replace = False
+        self.no_procedure = False
+        self.idAnIma = 0
+        self.varna_clicked_st = False
+
+        def show_hide_msg(e):
+            self.image_pressed = True
+            if self.arrow_up:
+                f1.grid()
+            else:
+                f1.grid_remove()
+            self.arrow_up = not self.arrow_up
+            img_lbl.configure(image=i[self.arrow_up])
+
+        img_lbl.bind("<Button-1>", show_hide_msg)
+        f2.grid(row=0, column=0, sticky=NW, padx=(5, 9))
+        self.frame = Frame(f)
+        style.configure("A.TLabel", font=("Nirmala UI", 18, "bold"), foreground="brown")
+        style.configure("B.TLabel", font=("Nirmala UI", 13, "bold"), foreground="red")
+        frm = Frame(self.frame)
         ttk.Label(frm, textvariable=self.key[0], style="A.TLabel", justify=CENTER).grid(
             row=0, column=0, sticky="n"
         )
@@ -982,61 +1021,99 @@ class sahAyikA:
         )
         frm.grid(row=0, column=0, sticky=NW, padx=(0, 8))
         self.f = []
+        coll = {}
+        self.coll = []
+        self.C = []
+        self.D = []
         for x in range(0, 60):
+            self.coll.append(None)
             self.f.append(None)
-        for x in range(0, 13):
-            self.f[x] = Frame(self.frame, bg="#faf9ae")
-            ttk.Label(
-                self.f[x], textvariable=self.next[x], style="C.TLabel", justify=CENTER
-            ).pack()
-            ttk.Label(
-                self.f[x], textvariable=self.varna[x], style="D.TLabel", justify=CENTER
-            ).pack()
+            self.C.append(None)
+            self.D.append(None)
+        style.configure(
+            f"C.TLabel", font=("Nirmala UI", 15, "bold"), foreground="black"
+        )
+        style.configure(
+            f"D.TLabel", font=("Nirmala UI", 15, "bold"), foreground="green"
+        )
+
+        def set_color(el, cl):
+            el.widget.configure(foreground=cl)
+
+        def click_varna(el, cl):
+            w = el.widget
+            n = self.coll[coll[w]]
+            self.root.wm_withdraw()
+            self.no_replace = True
+            self.no_procedure = True
+            self.varna_clicked_st = True
+            self.varna_clicked = n
+            self.main.msg.add("clicked")
+            self.main.value_change[1] = True
+            w.configure(foreground=cl)
+
+        for x in range(0, 60):
+            self.f[x] = Frame(self.frame)
+            self.C[x] = ttk.Label(
+                self.f[x],
+                textvariable=self.next[x],
+                style=f"C.TLabel",
+                justify=CENTER,
+                cursor="plus",
+            )
+            self.C[x].pack()
+            self.D[x] = ttk.Label(
+                self.f[x],
+                textvariable=self.varna[x],
+                style=f"D.TLabel",
+                justify=CENTER,
+                cursor="plus",
+            )
+            self.D[x].pack()
+            coll[self.C[x]] = x
+            coll[self.D[x]] = x
+            self.C[x].bind("<Button-1>", lambda i: click_varna(i, "black"))
+            self.C[x].bind("<Enter>", lambda i: set_color(i, "blue"))
+            self.C[x].bind("<Leave>", lambda i: set_color(i, "black"))
+            self.D[x].bind("<Button-1>", lambda i: click_varna(i, "green"))
+            self.D[x].bind("<Enter>", lambda i: set_color(i, "blue"))
+            self.D[x].bind("<Leave>", lambda i: set_color(i, "green"))
             self.f[x].grid(row=0, column=x + 1, sticky=NW)
-        self.f_count = 12
+            self.f[x].grid_remove()
         self.pUrvavarNa = [("", "", -1), ""]
         self.frame.grid(row=0, column=1, sticky=NW)
-        f1 = Frame(self.root, bg="#faf9ae")
-        style.configure(
-            "Z1.TLabel",
-            font=("Nirmala UI", 9, "bold"),
-            foreground="purple",
-            background="#faf9ae",
-        )
-        ttk.Label(f1, textvariable=self.extra[0], style="Z1.TLabel").grid(
-            row=0, column=0, sticky=NW
-        )
-        style.configure(
-            "Z2.TLabel", font=("Nirmala UI", 8), foreground="blue", background="#faf9ae"
-        )
-        ttk.Label(f1, textvariable=self.extra[1], style="Z2.TLabel").grid(
-            row=1, column=0, sticky=NW
-        )
+        f1 = Frame(up)
+
+        def down():
+            style.configure(
+                "Z1.TLabel",
+                font=("Nirmala UI", 9, "bold"),
+                foreground="purple",
+            )
+            ttk.Label(f1, textvariable=self.extra[0], style="Z1.TLabel").grid(
+                row=0, column=0, sticky=NW, padx=(3, 0)
+            )
+            style.configure("Z2.TLabel", font=("Nirmala UI", 8), foreground="blue")
+            ttk.Label(f1, textvariable=self.extra[1], style="Z2.TLabel").grid(
+                row=1, column=0, sticky=NW, pady=(0, 3), padx=(3, 0)
+            )
+            self.root.mainloop()
+
+        down()
         f1.grid(row=1, column=0, sticky=NW)
-        self.root.mainloop()
+        f1.grid_remove()
 
     def hide(self, s=False):
         if s:
-            if not self.closed:
-                self.__reset()
-                self.closed = True
+            self.root.wm_withdraw()
             return
-        if self.c == 1 and not self.closed:
-            self.__reset()
-            self.closed = True
+        if self.c == 1:
+            self.root.wm_withdraw()
         self.c -= 1
 
-    def __reset(self):
-        self.root.wm_withdraw()
-        if self.f_count > 12:
-            for x in range(13, self.f_count + 1):
-                self.f[x].grid_forget()
-            self.f_count = 12
-        for x in range(0, 13):
-            self.next[x].set("")
-            self.varna[x].set("")
-
     def show(self, v):
+        if self.no_procedure:
+            return
         self.reset_capital_status = False
 
         def reset_capital(k):
@@ -1048,14 +1125,12 @@ class sahAyikA:
                 while x < k[1]:
                     self.varna[x].set("")
                     self.next[x].set("")
+                    self.f[x].grid_remove()
                     x += 1
+                    self.idAnIma -= 1
                 self.main.msg.add("clear_sg")
                 self.main.value_change[1] = True
 
-        if self.f_count > 12:
-            for x in range(13, self.f_count + 1):
-                self.f[x].grid_forget()
-            self.f_count = 12
         next = v["key"][1]
         key = v["key"][0]
         matra = v["mAtrA"]
@@ -1071,8 +1146,11 @@ class sahAyikA:
                 ],
                 extra_cap[1][0],
             )
-        s = get_position()
-        self.root.geometry("+{0}+{1}".format(s[0] + 5, s[1] + 25))
+        if not self.no_replace:
+            s = get_position()
+            self.root.geometry("+{0}+{1}".format(s[0] + 5, s[1] + 25))
+        else:
+            self.no_replace = False
         halant = ("", False)
         if self.main.lang_mode not in ("Urdu", "Romanized"):
             halant = (
@@ -1127,6 +1205,7 @@ class sahAyikA:
                 extra += 1
                 continue
             self.next[c].set(x)
+            self.coll[c] = x
             k = a[x][0]
             if a[x][-1] == 0 and self.pUrvavarNa[0][-1] in [1, 3]:
                 k = a[x][1]
@@ -1141,32 +1220,21 @@ class sahAyikA:
             self.varna[c].set(k)
             c += 1
         len_a = len(a) - extra
-        if len_a - 1 > self.f_count + 1:
-            for x in range(self.f_count + 1, len_a):
-                self.f[x] = Frame(self.frame, bg="#faf9ae")
-                ttk.Label(
-                    self.f[x],
-                    textvariable=self.next[x],
-                    style="C.TLabel",
-                    justify=CENTER,
-                ).pack()
-                ttk.Label(
-                    self.f[x],
-                    textvariable=self.varna[x],
-                    style="D.TLabel",
-                    justify=CENTER,
-                ).pack()
-                self.f[x].grid(row=0, column=x + 1, sticky=NW)
-            self.f_count = len_a - 1
-        for x in range(c, 13):
-            self.next[x].set("")
-            self.varna[x].set("")
+        if len_a - 1 >= self.idAnIma:
+            x = self.idAnIma
+            while x < len_a:
+                self.f[x].grid()
+                x += 1
+        else:
+            x = len_a
+            while x < self.idAnIma:
+                self.f[x].grid_remove()
+                x += 1
+        self.idAnIma = len_a
         self.c += 1
         if not matra:
             self.pUrvavarNa = (b[key], key)
-        if self.closed:
-            self.closed = False
-            self.root.wm_deiconify()
+        self.root.wm_deiconify()
         if "cap" in v:
             self.d += 1
             self.reset_capital_status = True
