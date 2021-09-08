@@ -12,7 +12,6 @@ from keyboard import (
 from mouse import on_click, on_middle_click, on_right_click
 from time import time, sleep
 from threading import Thread
-from base64 import b64encode
 
 # sarve_bhAShA
 sarve_bhAShA = "#$',-.0123456789;ACDEGHIJKLMNOQRSTUWYabcdefghijklmnopqrstuvwxyz"
@@ -243,9 +242,7 @@ class parivartana:
     def set_typing_lang(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                r"resources/others/{0}.json".format(
-                    b64encode(lang.encode("ascii")).decode("utf-8")
-                ),
+                r"resources/others/{0}.json".format(lang),
                 encoding="utf-8",
                 mode="r+",
             )

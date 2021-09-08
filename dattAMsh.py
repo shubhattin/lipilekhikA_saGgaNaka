@@ -42,16 +42,9 @@ lang_code[1] = antaH_parivartan(lang_code[0])
 main = False
 for x in lang_code[1]:
     lang_code[2].append(x)
-display_lang_codes = {
-    "English": "en-in",
-    "हिन्दी": "hi-in",
-    "తెలుగు": "te-in",
-    "বাংলা": "bn-in",
-    "தமிழ்": "ta-in",
-    "ಕನ್ನಡ": "kn-in",
-    "संस्कृतम्": "sa-in",
-}
-display_lang_lists = tuple(display_lang_codes.keys())
+
+display_lang_lists = ("English", "हिन्दी", "తెలుగు",
+                      "বাংলা", "தமிழ்", "ಕನ್ನಡ", "संस्कृतम्")
 bhAShAH = []
 for x in lang_code[0]:
     bhAShAH.append(x)

@@ -13,7 +13,6 @@ from pratidarshan import (
     Tk,
     ttk,
     display_lang_lists,
-    display_lang_codes,
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
@@ -22,7 +21,6 @@ from kuJjikopalambhan import kuYjikolambhikam
 from os import startfile
 from urllib.request import urlopen
 from sys import argv
-from base64 import b64encode
 
 
 class Main:
@@ -55,7 +53,7 @@ class Main:
     def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                f"resources/others/{b64encode(lang.encode('ascii')).decode('utf-8')}.json",
+                f"resources/others/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -67,7 +65,7 @@ class Main:
     def load_display_lng(self, lang):
         if lang not in self.loaded_display_lng:
             file = open(
-                f"resources/others/{b64encode(display_lang_codes[lang].encode('ascii')).decode('utf-8')}.json",
+                f"resources/others/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -239,7 +237,7 @@ class Main:
         self.r.ajay_texts[0].set(t[:-1])
         self.r.ajay_texts[1].set(t)
         alert(
-            self.r.l_data["typ_lang_change"].format(self.r.l_data["scripts"][l]),
+            f'{self.r.l_data["menu_values"]["typing_lang"]} ➠ {self.r.l_data["scripts"][l]}',
             color="green",
             lapse=1200,
         )
@@ -313,24 +311,6 @@ class Main:
 
 if __name__ == "__main__":
     freeze_support()
-
-    def booster():
-        file = open(
-            f"resources/others/{b64encode(lang_code[2][get_registry('lekhanasahAyikA')].encode('ascii')).decode('utf-8')}.json",
-            mode="r",
-            encoding="utf-8",
-        )
-        file.close()
-        file = open(
-            f"resources/others/{b64encode(display_lang_codes[display_lang_lists[get_registry('bhAShAnuprayogaH')]].encode('ascii')).decode('utf-8')}.json",
-            mode="r",
-            encoding="utf-8",
-        )
-        file.close()
-
-    bs = Thread(target=booster)
-    bs.daemon = True
-    bs.start()
 
     class KeyProcessManager:
         def __init__(self, v):
@@ -651,7 +631,6 @@ if __name__ == "__main__":
         try:
             o = urlopen("https://api.lipilekhika.com/navasanskaranam")
             ver1 = float(o.read().decode("utf-8"))
-            urlopen("https://api.lipilekhika.com/abhyagrahanam")
         except:
             pass
         if ver1 > ver:

@@ -21,7 +21,6 @@ from dattAMsh import (
     bhAShAH,
     AJAY,
     bhAShAH_img,
-    display_lang_codes,
 )
 from mouse import get_position
 from threading import Thread
