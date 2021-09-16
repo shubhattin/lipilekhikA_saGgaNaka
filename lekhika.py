@@ -629,7 +629,7 @@ if __name__ == "__main__":
 
         ver1 = 0
         try:
-            o = urlopen("https://api.lipilekhika.com/navasanskaranam")
+            o = urlopen("https://web.lipilekhika.com/navasanskaranam")
             ver1 = float(o.read().decode("utf-8"))
         except:
             pass
