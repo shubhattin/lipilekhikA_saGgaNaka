@@ -53,7 +53,7 @@ class Main:
     def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                f"resources/others/{lang}.json",
+                f"resources/dattAMsh/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -65,7 +65,7 @@ class Main:
     def load_display_lng(self, lang):
         if lang not in self.loaded_display_lng:
             file = open(
-                f"resources/others/{lang}.json",
+                f"resources/dattAMsh/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )

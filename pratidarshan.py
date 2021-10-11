@@ -732,7 +732,7 @@ class pradarshanam:
             r.wm_withdraw()
             r.resizable(False, False)
             r.iconbitmap(r"resources\Icon.ico")
-            file = open("resources/others/LICENCE.txt", mode="r+")
+            file = open("resources/dattAMsh/LICENCE.txt", mode="r+")
             lpo = file.read()
             file.close()
             self.style.configure(
