@@ -43,8 +43,21 @@ main = False
 for x in lang_code[1]:
     lang_code[2].append(x)
 
-display_lang_lists = ("English", "हिन्दी", "తెలుగు",
-                      "বাংলা", "தமிழ்", "ಕನ್ನಡ", "संस्कृतम्")
+display_lang_lists = (
+    "English",
+    "हिन्दी",
+    "संस्कृतम्",
+    "తెలుగు",
+    "বাংলা",
+    "தமிழ்",
+    "ಕನ್ನಡ",
+    "मराठी",
+    "ગુજરાતી",
+    "മലയാളം",
+    "ଓଡ଼ିଆ",    
+    "ਪੰਜਾਬੀ",
+    "اُردُو"
+)
 bhAShAH = []
 for x in lang_code[0]:
     bhAShAH.append(x)

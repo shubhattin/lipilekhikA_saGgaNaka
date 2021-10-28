@@ -138,23 +138,18 @@ class ToolTip:
             size = 10
         self.win = Toplevel(root)
         self.win.wm_withdraw()
-        self.style = ttk.Style(self.win)
-        self.style.configure(
-            self.name,
-            font=("Nirmala UI", size),
-            foreground="#ffffe1",
-            background="#000023",
-        )
         self.text = StringVar(self.win, text)
-        label = ttk.Label(
+        self.label = ttk.Label(
             self.win,
             textvariable=self.text,
             justify="left",
             relief="solid",
             borderwidth=1.7,
-            style=self.name,
+            font=("Nirmala UI", size),
+            foreground="#ffffe1",
+            background="#000023",
         )
-        label.pack(ipadx=2)
+        self.label.pack(ipadx=2)
         self.win.wm_overrideredirect(True)
         self.chalita_sthiti = False
         widget.bind("<Enter>", self.enter)
@@ -186,7 +181,7 @@ class ToolTip:
                 size = 9
             else:
                 size = 10
-            self.style.configure(self.name, font=("Nirmala UI", size))
+            self.label.configure(font=("Nirmala UI", size))
         elif self.chalita_sthiti:
             self.win.wm_deiconify()
 
@@ -214,7 +209,8 @@ class pradarshanam:
         self.display_values = {}
         self.root.bind("<Control-q>", lambda s: self.open_img())
         for x in self.l_data["values"]:
-            self.display_values[x] = StringVar(self.root, self.l_data["values"][x])
+            self.display_values[x] = StringVar(
+                self.root, self.l_data["values"][x])
         b = lang_code[1][self.main_object.lang_mode]
         self.karyAsthiti = self.main_object.ks
         a = self.main_object.sa_lang
@@ -244,13 +240,18 @@ class pradarshanam:
         convert_img = ImageTk.PhotoImage(
             Image.open(r"resources\img\convert.webp").resize((24, 24))
         )
-        self.m.menu.entryconfigure(2, image=self.image[0], selectimage=self.image[1])
-        self.m.menu.entryconfigure(3, image=self.image1[0], selectimage=self.image1[1])
-        self.m.menu.entryconfigure(4, image=self.image1[0], selectimage=self.image1[1])
+        self.m.menu.entryconfigure(
+            2, image=self.image[0], selectimage=self.image[1])
+        self.m.menu.entryconfigure(
+            3, image=self.image1[0], selectimage=self.image1[1])
+        self.m.menu.entryconfigure(
+            4, image=self.image1[0], selectimage=self.image1[1])
         self.m.menu.entryconfigure(8, image=about_img)
         self.m.menu.entryconfigure(7, image=convert_img)
-        fh = ImageTk.PhotoImage(Image.open(r"resources\img\menu.webp").resize((32, 32)))
-        add = ImageTk.PhotoImage(Image.open(r"resources\img\add.webp").resize((15, 15)))
+        fh = ImageTk.PhotoImage(Image.open(
+            r"resources\img\menu.webp").resize((32, 32)))
+        add = ImageTk.PhotoImage(Image.open(
+            r"resources\img\add.webp").resize((15, 15)))
         self.__objs["add_lang"].configure(image=add)
         self.m.configure(image=fh)
         self.github_obj = 0
@@ -275,7 +276,8 @@ class pradarshanam:
             self.root.eval("tk::PlaceWindow . center")
             self.centred = True
             self.root.attributes("-topmost", True)
-            self.root.after(400, lambda: self.root.attributes("-topmost", False))
+            self.root.after(
+                400, lambda: self.root.attributes("-topmost", False))
         else:
             main_obj.give_startup_msg()
         self.root.after(10, self.__titles)
@@ -340,8 +342,9 @@ class pradarshanam:
         max = ttk.Label(fr, image=img["max"], background="white")
         max.grid(row=0, column=10)
         self.org = [0, 0]
-        close = ttk.Label(fr, image=img["close"], background="white", cursor="target")
-        close.grid(row=0, column=11, padx=(7, 0))
+        close = ttk.Label(fr, image=img["close"],
+                          background="white", cursor="target")
+        close.grid(row=0, column=11, padx=(7, 4), ipadx=2)
         close.bind("<Button-1>", lambda s: self.hide(bac=True))
 
         def drag(t, record=False):
@@ -357,53 +360,54 @@ class pradarshanam:
         dr.bind("<B1-Motion>", drag)
         max.bind("<Button-1>", self.show)
 
-        def change_color(t):
-            if t == 0:
-                max.configure(background="yellow")
-            elif t == 1:
-                max.configure(background="white")
+        def change_color(elm, cl):
+            elm.widget.configure(background=cl)
 
-        max.bind("<Enter>", lambda h: change_color(0))
-        max.bind("<Leave>", lambda h: change_color(1))
+        max.bind("<Enter>", lambda h: change_color(h, "yellow"))
+        max.bind("<Leave>", lambda h: change_color(h, "white"))
+        close.bind("<Enter>", lambda h: change_color(h, "yellow"))
+        close.bind("<Leave>", lambda h: change_color(h, "white"))
         fr.pack(side="right")
         win.wm_deiconify()
         win.mainloop()
 
     def __top_frame(self):
-        self.top_frame = ttk.Frame(self.root)
-        self.style.configure(
-            "B.TMenubutton",
-            font=("Nirmala UI", 8, "bold"),
-            foreground="purple",
-            background="white",
-        )
+        f1 = Frame(self.root)
+        self.top_frame = ttk.Frame(f1)
+        f1.grid(row=0, sticky=NW)
+        self.top_frame.pack(side="left")
         self.usage_btn = ttk.Label(self.top_frame, compound="left")
         self.__objs["usage"] = self.usage_btn
         self.usage_btn.bind("<Button-1>", lambda s: self.open_img())
-        self.usage_btn.grid(row=0, column=2, sticky=NW, padx=(18, 0), pady=(1, 0))
+        self.usage_btn.grid(row=0, column=2, sticky=NW,
+                            padx=(18, 0), pady=(1, 0))
         ad = list(deepcopy(display_lang_lists))[::-1]
         ad.append("")
         ad = ad[::-1]
         frame1 = Frame(
             self.top_frame, highlightbackground="black", highlightthickness=1
         )
+        self.style.configure(
+            "app.TMenubutton",
+            font=("Nirmala UI", 8, "bold"),
+            foreground="purple",
+            background="white",
+        )
         bhASA = ttk.OptionMenu(
             frame1,
             self.language,
             *ad,
-            style="B.TMenubutton",
+            style="app.TMenubutton",
             command=self.update_lang_data,
         )
         bhASA.grid(row=0, column=0, stick=NW)
         frame1.grid(row=0, column=4, stick=NW, padx=(0, 25), pady=(1.5, 0))
         self.__objs["app_lang_option"] = frame1
-        self.style.configure("MX1.TLabel", background="white")
         bhASA["menu"].config(font=("Nirmala UI", (8), "bold"), fg="red")
-        self.bac = ttk.Label(self.top_frame)
-        self.bac.grid(row=0, column=6, sticky="ne", padx=(65, 19.5), pady=(1.5, 0))
+        self.bac = ttk.Label(f1)
+        self.bac.pack(side="right", padx=(65, 19.5), pady=(1.5, 0))
         self.bac.bind("<Button-1>", lambda s: self.hide())
         self.__objs["background"] = self.bac
-        self.top_frame.grid(row=0, sticky=NW)
         self.__menu_kAraH()
 
     def __menu_kAraH(self):
@@ -501,7 +505,8 @@ class pradarshanam:
         )
         self.m.menu.add_command(
             label=self.menu_values["extra"],
-            command=lambda: start_file(r"resources\Additional Information.pdf"),
+            command=lambda: start_file(
+                r"resources\Additional Information.pdf"),
             background="#fdfdd6",
             foreground="red",
             activeforeground="white",
@@ -512,8 +517,10 @@ class pradarshanam:
     def __input_frame(self):
         command_frame = ttk.Frame(self.root)
         self.image = (
-            ImageTk.PhotoImage(Image.open(r"resources\img\off.webp").resize((51, 29))),
-            ImageTk.PhotoImage(Image.open(r"resources\img\on.webp").resize((51, 29))),
+            ImageTk.PhotoImage(Image.open(
+                r"resources\img\off.webp").resize((51, 29))),
+            ImageTk.PhotoImage(Image.open(
+                r"resources\img\on.webp").resize((51, 29))),
         )
         self.kAryaM = ttk.Label(command_frame)
         self.kAryaM.grid(row=0, column=0, sticky=NW, padx=(0, 25))
@@ -522,14 +529,19 @@ class pradarshanam:
         )
         self.__objs["main"] = self.kAryaM
         self.style.configure(
-            "SA.TRadiobutton", font=("Nirmala UI", 9, "bold"), background="lightblue"
+            "sa_off.TRadiobutton",
+            font=("Nirmala UI", 9, "bold"),
+            background="lightblue",
+        )
+        self.style.configure(
+            "sa_on.TRadiobutton", font=("Nirmala UI", 9, "bold"), background="lightblue"
         )
         self.fr_ajay = ttk.Frame(command_frame)
         saoff = ttk.Radiobutton(
             self.fr_ajay,
             textvariable=self.ajay_texts[0],
             value=0,
-            style="SA.TRadiobutton",
+            style="sa_off.TRadiobutton",
             variable=self.sanskrit_mode,
             command=self.update_sans_mode,
         )
@@ -538,50 +550,46 @@ class pradarshanam:
             self.fr_ajay,
             textvariable=self.ajay_texts[1],
             value=1,
-            style="SA.TRadiobutton",
+            style="sa_on.TRadiobutton",
             variable=self.sanskrit_mode,
             command=self.update_sans_mode,
         )
         saon.grid(row=0, column=1, sticky=NW)
-        # saon.bind(
-        #     "<Enter>",
-        #     lambda x: self.style.configure(
-        #         "SA.TRadioButton", foreground="red"
-        #     )
-        # )
-        # saon.bind(
-        #     "<Leave>",
-        #     lambda x: self.style.configure(
-        #         "SA.TRadioButton", foreground="black"
-        #     )
-        # )
-        # saoff.bind(
-        #     "<Enter>",
-        #     lambda x: self.style.configure(
-        #         "SA.TRadioButton", font=("Nirmala UI", 10, "bold")
-        #     )
-        # )
-        # saoff.bind(
-        #     "<Leave>",
-        #     lambda x: self.style.configure(
-        #         "SA.TRadioButton", font=("Nirmala UI", 9, "bold")
-        #     )
-        # )
+        sa_cl = "blue"
+        saon.bind(
+            "<Enter>",
+            lambda x: self.style.configure(
+                "sa_on.TRadiobutton", foreground=sa_cl),
+        )
+        saon.bind(
+            "<Leave>",
+            lambda x: self.style.configure(
+                "sa_on.TRadiobutton", foreground="black"),
+        )
+        saoff.bind(
+            "<Enter>",
+            lambda x: self.style.configure(
+                "sa_off.TRadiobutton", foreground=sa_cl),
+        )
+        saoff.bind(
+            "<Leave>",
+            lambda x: self.style.configure(
+                "sa_off.TRadiobutton", foreground="black"),
+        )
         if self.main_object.lang_mode not in ("Urdu", "Romanized", "Kashmiri"):
             self.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.8, 0))
         command_frame.grid(row=2, column=0, sticky=NW)
         frame = ttk.Frame(self.root)
-        self.style.configure(
-            "TYP.TLabel", font=("Nirmala UI", 12, "bold"), foreground="brown"
-        )
         ttk.Label(
             frame,
-            style="TYP.TLabel",
+            font=("Nirmala UI", 12, "bold"),
+            foreground="brown",
             textvariable=self.display_values["typing_lang_main"],
         ).grid(row=0, column=0, sticky=NW)
-        frame1 = Frame(frame, highlightbackground="black", highlightthickness=1)
+        frame1 = Frame(frame, highlightbackground="black",
+                       highlightthickness=1)
         self.style.configure(
-            "A.TMenubutton",
+            "type_lang.TMenubutton",
             font=("Nirmala UI", 10, "bold"),
             foreground="green",
             background="white",
@@ -593,7 +601,7 @@ class pradarshanam:
             frame1,
             self.typing_lang,
             *asd,
-            style="A.TMenubutton",
+            style="type_lang.TMenubutton",
             command=lambda s: self.main_object.update_typ_lang(
                 self.typing_lang.get(), True
             ),
@@ -601,40 +609,37 @@ class pradarshanam:
         sd.grid(row=0, column=1, stick=NW)
         frame1.grid(row=0, column=1, stick=NW, padx=1)
         self.__objs["typ_lang"] = frame1
-        sd["menu"].config(font=("Nirmala UI", 10, "bold"), fg="red", bg="#faf9ae")
+        sd["menu"].config(font=("Nirmala UI", 10, "bold"),
+                          fg="red", bg="#faf9ae")
         add = ttk.Label(frame)
         add.grid(row=0, column=2, sticky=NW, pady=4, padx=(3.3, 6.4))
         self.__objs["add_lang"] = add
         self.image1 = (
-            ImageTk.PhotoImage(Image.open(r"resources\img\off1.webp").resize((32, 18))),
-            ImageTk.PhotoImage(Image.open(r"resources\img\on1.webp").resize((32, 18))),
+            ImageTk.PhotoImage(Image.open(
+                r"resources\img\off1.webp").resize((32, 18))),
+            ImageTk.PhotoImage(Image.open(
+                r"resources\img\on1.webp").resize((32, 18))),
         )
         self.sg_button = ttk.Label(frame)
         self.sg_button.grid(row=0, column=4, sticky=NW, pady=2.5)
         self.sg_button.bind(
-            "<Button-1>", lambda x: self.main_object.exec_taskbar_commands("sg", False)
+            "<Button-1>", lambda x: self.main_object.exec_taskbar_commands(
+                "sg", False)
         )
         self.__objs["sahayika"] = self.sg_button
-        self.style.configure(
-            "sah.TLabel", font=("Nirmala UI", 11, "bold"), foreground="blue"
-        )
         hl = ttk.Label(
-            frame, textvariable=self.display_values["sahayika"], style="sah.TLabel"
+            frame,
+            textvariable=self.display_values["sahayika"],
+            font=("Nirmala UI", 11, "bold"),
+            foreground="blue",
         )
-        hl.grid(row=0, column=5, sticky=NW)
+        hl.grid(row=0, column=5, sticky=NW, ipadx=1)
         hl_color = ["blue", "#ff4500"]
-        hl.bind(
-            "<Enter>",
-            lambda x: self.style.configure(
-                "sah.TLabel", font=("Nirmala UI", 12, "bold"), foreground=hl_color[1]
-            ),
-        )
+        hl.bind("<Enter>", lambda x: x.widget.configure(
+            foreground=hl_color[1]))
 
         def lv(x):
-
-            lk = lambda: self.style.configure(
-                "sah.TLabel", font=("Nirmala UI", 11, "bold"), foreground=hl_color[0]
-            )
+            def lk(): return hl.configure(foreground=hl_color[0])
             lk()
             self.root.after(10, lk)
             self.root.after(460, lk)
@@ -643,20 +648,16 @@ class pradarshanam:
 
         def sg_label_click():
             color = ["green", "black"][int(self.main_object.sg_status)]
-            self.style.configure("sah.TLabel", foreground=color)
-            self.root.after(
-                450, lambda: self.style.configure("sah.TLabel", foreground=hl_color[1])
-            )
+            hl.configure(foreground=color)
+            self.root.after(450, lambda: hl.configure(foreground=hl_color[1]))
             self.main_object.exec_taskbar_commands("sg", False)
 
         hl.bind("<Button-1>", lambda x: sg_label_click())
         frame.grid(row=3, column=0, sticky=NW)
-        self.style.configure(
-            "ins.TLabel", font=("Nirmala UI", 10, "bold"), foreground="purple"
-        )
         ttk.Label(
             self.root,
-            style="ins.TLabel",
+            font=("Nirmala UI", 10, "bold"),
+            foreground="purple",
             textvariable=self.display_values["instructions"],
         ).grid(row=4, column=0, sticky=NW)
 
@@ -676,37 +677,32 @@ class pradarshanam:
         about.wm_withdraw()
         about.resizable(False, False)
         about.iconbitmap(r"resources\Icon.ico")
-        self.style.configure(
-            "about.TLabel", font=("Nirmala UI", 11, "bold"), foreground="brown"
-        )
-        self.style.configure(
-            "email.TLabel", font=("Nirmala UI", 10, "bold"), foreground="green"
-        )
         ttk.Label(
             about,
             textvariable=self.display_values["app_description"],
-            style="about.TLabel",
+            font=("Nirmala UI", 11, "bold"),
+            foreground="brown",
             justify=CENTER,
         ).pack()
         ttk.Label(
-            about, text="Email :- lipilekhika@gmail.com", style="email.TLabel"
+            about,
+            text="Email :- lipilekhika@gmail.com",
+            font=("Nirmala UI", 10, "bold"),
+            foreground="green",
         ).pack()
         self.display_values["version"].set(
             self.display_values["version"].get().format(ver)
         )
-        self.style.configure(
-            "ver.TLabel", font=("Nirmala UI", 11, "bold"), foreground="red"
-        )
         ttk.Label(
-            about, textvariable=self.display_values["version"], style="ver.TLabel"
+            about,
+            textvariable=self.display_values["version"],
+            font=("Nirmala UI", 11, "bold"),
+            foreground="red",
         ).pack()
-        self.style.configure(
-            "bh.TLabel", font=("Nirmala UI", 11, "bold"), foreground="blue"
-        )
         f = ttk.Frame(about)
-        ttk.Label(f, text="भारते रचितः", style="bh.TLabel").grid(
-            row=0, column=0, padx=(0, 10)
-        )
+        ttk.Label(
+            f, text="भारते रचितः", font=("Nirmala UI", 11, "bold"), foreground="blue"
+        ).grid(row=0, column=0, padx=(0, 10))
         git = ttk.Label(f)
         git.grid(row=0, column=2)
         f.pack()
@@ -735,21 +731,20 @@ class pradarshanam:
             file = open("resources/dattAMsh/LICENCE.txt", mode="r+")
             lpo = file.read()
             file.close()
-            self.style.configure(
-                "LIC.TLabel", font=("Consolas", 12, "bold"), foreground="green"
-            )
-            ttk.Label(r, text=lpo, style="LIC.TLabel").pack()
+            ttk.Label(
+                r, text=lpo, font=("Nirmala UI", 12, "bold"), foreground="green"
+            ).pack()
             r.wm_deiconify()
             r.mainloop()
 
         self.style.configure(
-            "LIC.TButton", font=("Nirmala Ui", 10, "bold"), foreground="black"
+            "lic_btn.TButton", font=("Nirmala Ui", 10, "bold"), foreground="black"
         )
         ttk.Button(
             about,
             textvariable=self.display_values["licence"],
             command=pratyAdesham,
-            style="LIC.TButton",
+            style="lic_btn.TButton",
         ).pack()
         about.wm_deiconify()
         about.mainloop()
@@ -771,7 +766,8 @@ class pradarshanam:
         self.img_win = Toplevel(self.root)
         self.img_win.wm_withdraw()
         self.img_win.title("परिवर्तनसूच्यः")
-        self.img_win.geometry("+{0}+0".format(int(self.root.winfo_screenwidth() - 600)))
+        self.img_win.geometry(
+            "+{0}+0".format(int(self.root.winfo_screenwidth() - 600)))
         self.img_win.protocol("WM_DELETE_WINDOW", self.update_img_win)
         self.img_win.iconbitmap(r"resources\Icon.ico")
         image_collection = {}
@@ -796,7 +792,7 @@ class pradarshanam:
         fr = ttk.Frame(self.img_win)
         lang = StringVar(self.img_win, value=self.typing_lang.get())
         self.style.configure(
-            "B.TMenubutton",
+            "sUchI.TMenubutton",
             font=("Nirmala UI", 10, "bold"),
             background="white",
             foreground="green",
@@ -809,12 +805,14 @@ class pradarshanam:
             frame1,
             lang,
             *im,
-            style="B.TMenubutton",
-            command=lambda _: sUchI.configure(image=image_collection[lang.get()]),
+            style="sUchI.TMenubutton",
+            command=lambda _: sUchI.configure(
+                image=image_collection[lang.get()]),
         )
         bhASAd.grid(row=0, column=0, stick=NW, ipadx=10)
         frame1.grid(row=0, column=0, stick=NW, padx=(10, 150), pady=(5, 0))
-        bhASAd["menu"].config(font=("Nirmala UI", (10), "bold"), fg="red", bg="#faf9ae")
+        bhASAd["menu"].config(
+            font=("Nirmala UI", (10), "bold"), fg="red", bg="#faf9ae")
         ck_btn = IntVar(self.img_win, 0)
         Checkbutton(
             fr,
@@ -829,29 +827,25 @@ class pradarshanam:
         fr.grid(row=0, column=0, sticky=NW)
         self.img_win.resizable(False, False)
         self.img_window_status = True
-        self.style.configure(
-            "SUC.TLabel", font=("Nirmala UI", 12, "bold"), foreground="green"
-        )
         ttk.Label(
             self.img_win,
             textvariable=self.display_values["sUchI_msg"],
-            style="SUC.TLabel",
+            font=("Nirmala UI", 12, "bold"),
+            foreground="green",
             justify=CENTER,
         ).grid(row=1, column=0, sticky="n")
-        self.style.configure("kl.TLabel", padding=5)
-        sUchI = ttk.Label(
-            self.img_win, image=image_collection[lang.get()], style="kl.TLabel"
-        )
-        sUchI.grid(row=2, column=0, sticky=NW)
-        self.style.configure(
-            "N.TLabel", font=("Nirmala UI", 9, "bold"), foreground="brown"
-        )
+        sUchI = ttk.Label(self.img_win, image=image_collection[lang.get()])
+        sUchI.grid(row=2, column=0, sticky=NW, padx=(5, 5), pady=(5, 5))
         ttk.Label(
-            self.img_win, textvariable=self.display_values["nirdesh"], style="N.TLabel"
+            self.img_win,
+            textvariable=self.display_values["nirdesh"],
+            font=("Nirmala UI", 9, "bold"),
+            foreground="brown",
         ).grid(row=3, column=0, sticky=NW)
         self.img_win.wm_deiconify()
         self.img_win.attributes("-topmost", True)
-        self.img_win.after(2300, lambda: self.img_win.attributes("-topmost", False))
+        self.img_win.after(
+            2300, lambda: self.img_win.attributes("-topmost", False))
         self.root.after(20, lambda: self.img_win.mainloop())
 
     def hide(self, event=None, bac=False):
@@ -879,7 +873,8 @@ class pradarshanam:
         except AttributeError:
             pass
         if not self.centred:
-            self.root.after(20, lambda: self.root.eval("tk::PlaceWindow . center"))
+            self.root.after(20, lambda: self.root.eval(
+                "tk::PlaceWindow . center"))
             self.centred = True
         self.root.attributes("-topmost", True)
         self.root.after(1300, lambda: self.root.attributes("-topmost", False))
@@ -923,7 +918,8 @@ class pradarshanam:
                     self.l_data["title"][x + str(n)], self.language.get()
                 )
                 continue
-            self.title_ref[x].update_lekha(self.l_data["title"][x], self.language.get())
+            self.title_ref[x].update_lekha(
+                self.l_data["title"][x], self.language.get())
         self.display_values["version"].set(
             self.display_values["version"].get().format(ver)
         )
@@ -965,11 +961,11 @@ class sahAyikA:
             self.root.update()
 
         init()
-        up = Frame(self.root, highlightbackground="black", highlightthickness=1.5)
+        up = Frame(self.root, highlightbackground="black",
+                   highlightthickness=1.5)
         up.pack(ipadx=4)
         f = Frame(up)
         f.grid(row=0, column=0, sticky=NW)
-        style = ttk.Style(self.root)
         f2 = Frame(f)
         img = ImageTk.PhotoImage(
             image=Image.open(r"resources\img\main.webp").resize((23, 23)), master=f2
@@ -977,17 +973,18 @@ class sahAyikA:
         self.arrow_up = True
         i = {
             True: ImageTk.PhotoImage(
-                image=Image.open(r"resources\img\down-arrow.webp").resize((21, 21)),
+                image=Image.open(
+                    r"resources\img\down-arrow.webp").resize((21, 21)),
                 master=f2,
             ),
             False: ImageTk.PhotoImage(
-                image=Image.open(r"resources\img\up-arrow.webp").resize((21, 21)),
+                image=Image.open(
+                    r"resources\img\up-arrow.webp").resize((21, 21)),
                 master=f2,
             ),
         }
-        style.configure("IMG.TLabel")
-        ttk.Label(f2, image=img, style="IMG.TLabel").grid(row=0, column=0, pady=(8, 0))
-        img_lbl = ttk.Label(f2, style="IMG.TLabel", cursor="target")
+        ttk.Label(f2, image=img).grid(row=0, column=0, pady=(8, 0))
+        img_lbl = ttk.Label(f2, cursor="target")
         img_lbl.grid(row=1, column=0, pady=(3, 0), padx=(2, 0))
         img_lbl.configure(image=i[self.arrow_up])
         self.image_pressed = False
@@ -996,6 +993,7 @@ class sahAyikA:
         self.no_procedure = False
         self.idAnIma = 0
         self.varna_clicked_st = False
+        self.last_hovered = [False, -1]
 
         def show_hide_msg(e):
             self.image_pressed = True
@@ -1009,15 +1007,21 @@ class sahAyikA:
         img_lbl.bind("<Button-1>", show_hide_msg)
         f2.grid(row=0, column=0, sticky=NW, padx=(5, 9))
         self.frame = Frame(f)
-        style.configure("A.TLabel", font=("Nirmala UI", 18, "bold"), foreground="brown")
-        style.configure("B.TLabel", font=("Nirmala UI", 13, "bold"), foreground="red")
         frm = Frame(self.frame)
-        ttk.Label(frm, textvariable=self.key[0], style="A.TLabel", justify=CENTER).grid(
-            row=0, column=0, sticky="n"
-        )
-        ttk.Label(frm, textvariable=self.key[1], style="B.TLabel", justify=CENTER).grid(
-            row=1, column=0, sticky="n"
-        )
+        ttk.Label(
+            frm,
+            textvariable=self.key[0],
+            font=("Nirmala UI", 18, "bold"),
+            foreground="brown",
+            justify=CENTER,
+        ).grid(row=0, column=0, sticky="n")
+        ttk.Label(
+            frm,
+            textvariable=self.key[1],
+            font=("Nirmala UI", 13, "bold"),
+            foreground="red",
+            justify=CENTER,
+        ).grid(row=1, column=0, sticky="n")
         frm.grid(row=0, column=0, sticky=NW, padx=(0, 8))
         self.f = []
         coll = {}
@@ -1029,15 +1033,15 @@ class sahAyikA:
             self.f.append(None)
             self.C.append(None)
             self.D.append(None)
-        style.configure(
-            f"C.TLabel", font=("Nirmala UI", 15, "bold"), foreground="black"
-        )
-        style.configure(
-            f"D.TLabel", font=("Nirmala UI", 15, "bold"), foreground="green"
-        )
 
         def set_color(el, cl):
-            el.widget.configure(foreground=cl)
+            w = el.widget
+            w.configure(foreground=cl)
+            if cl == "blue":
+                n = coll[w]
+                self.last_hovered = [True, n]
+            else:
+                self.last_hovered = [False, -1]
 
         def click_varna(el, cl):
             w = el.widget
@@ -1056,7 +1060,8 @@ class sahAyikA:
             self.C[x] = ttk.Label(
                 self.f[x],
                 textvariable=self.next[x],
-                style=f"C.TLabel",
+                font=("Nirmala UI", 15, "bold"),
+                foreground="black",
                 justify=CENTER,
                 cursor="plus",
             )
@@ -1064,7 +1069,8 @@ class sahAyikA:
             self.D[x] = ttk.Label(
                 self.f[x],
                 textvariable=self.varna[x],
-                style=f"D.TLabel",
+                font=("Nirmala UI", 15, "bold"),
+                foreground="green",
                 justify=CENTER,
                 cursor="plus",
             )
@@ -1084,18 +1090,18 @@ class sahAyikA:
         f1 = Frame(up)
 
         def down():
-            style.configure(
-                "Z1.TLabel",
+            ttk.Label(
+                f1,
+                textvariable=self.extra[0],
                 font=("Nirmala UI", 9, "bold"),
                 foreground="purple",
-            )
-            ttk.Label(f1, textvariable=self.extra[0], style="Z1.TLabel").grid(
-                row=0, column=0, sticky=NW, padx=(3, 0)
-            )
-            style.configure("Z2.TLabel", font=("Nirmala UI", 8), foreground="blue")
-            ttk.Label(f1, textvariable=self.extra[1], style="Z2.TLabel").grid(
-                row=1, column=0, sticky=NW, pady=(0, 3), padx=(3, 0)
-            )
+            ).grid(row=0, column=0, sticky=NW, padx=(3, 0))
+            ttk.Label(
+                f1,
+                textvariable=self.extra[1],
+                font=("Nirmala UI", 8),
+                foreground="blue",
+            ).grid(row=1, column=0, sticky=NW, pady=(0, 3), padx=(3, 0))
             self.root.mainloop()
 
         down()
@@ -1107,7 +1113,12 @@ class sahAyikA:
             self.root.wm_withdraw()
             return
         if self.c == 1:
-            self.root.wm_withdraw()
+            if self.last_hovered[0]:
+                self.root.wm_withdraw()
+                x = self.last_hovered[1]
+                self.D[x].configure(foreground="green")
+                self.C[x].configure(foreground="black")
+                self.last_hovered = [False, -1]
         self.c -= 1
 
     def show(self, v):
@@ -1241,12 +1252,6 @@ class sahAyikA:
         self.root.after(15000, self.hide)
 
     def set_extra_values(self):
-        gh = False
-        while not gh:
-            try:
-                gh = self.main.get("ready")
-            except:
-                pass
         l_data = self.main.display_data[self.main.darshan]
         self.extra[0].set(l_data["sahAyikA_msg"]["first_sahayika"])
         self.extra[1].set(l_data["sahAyikA_msg"]["second_sahayika"])

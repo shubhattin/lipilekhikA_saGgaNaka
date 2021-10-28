@@ -2,14 +2,14 @@ from keyboard import (
     add_hotkey,
     on_press,
     on_release_key,
-    wait,
     all_modifiers,
     on_press_key,
     write,
     press_and_release,
     add_hotkey,
+    unhook_all as key_unhook,
 )
-from mouse import on_click, on_middle_click, on_right_click
+from mouse import on_click, on_middle_click, on_right_click, unhook_all as mouse_unhook
 from time import time, sleep
 from threading import Thread
 
@@ -29,29 +29,29 @@ class kuYjikolambhikam:
         self.obj = obj
         self.ks = obj.get("ks")
         self.get = lambda x, v=0: obj.get(x, v)
+        th = Thread(target=self.__check_value_updates)
+        th.daemon = True
+        th.start()
         self.main = parivartana(self)
         self.modifier_press_status = (False, "", 0)
         self.last_time = time()
         self.shortcut_press = False
-        self.start_all_listeners()
         self.single_alt = True
         self.vrn = varna("", -1)
-        th = Thread(target=self.__check_value_updates)
-        th.daemon = True
-        th.start()
-        wait("")
 
     def __check_value_updates(self):
+        self.__start_all_listeners()
         self.t = 0
+        t = 0.1
         while True:
             a = self.get("get_val_change")[1]
             if a:
                 self.update()
-                self.get("set_val_change", 1)
+                self.get("set_val_change",1)
             else:
-                sleep(0.2)
+                sleep(t)
                 if self.ks == 1:
-                    self.t += 0.2
+                    self.t += t
             if self.t > 600.0 and self.ks == 1:
                 self.ks = 0
                 self.t = 0
@@ -63,7 +63,7 @@ class kuYjikolambhikam:
         self.last_time = t
         return elph
 
-    def start_all_listeners(self):
+    def __start_all_listeners(self):
         def change():
             self.ks = abs(self.ks - 1)
             if self.main.sg_status and self.main.sg:
@@ -95,6 +95,8 @@ class kuYjikolambhikam:
     def detect_key(self, key):
         tm = key.time
         key = key.name
+        if key == None:
+            return
         more = True
         if self.modifier_press_status[0] and key != self.modifier_press_status[1]:
             self.shortcut_press = True
@@ -196,6 +198,10 @@ class kuYjikolambhikam:
                     self.vrn.name = y
                     self.vrn.time = time()
                     self.process_key(self.vrn)
+            elif x == "restart":
+                key_unhook()
+                mouse_unhook()
+                self.__start_all_listeners()
         self.get("null_msg")
 
 
@@ -209,10 +215,6 @@ def send_keys(key):
 class parivartana:
     def __init__(self, main):
         self.main = main
-        if not self.main.get("tk"):
-            while not self.main.get("tk"):
-                pass
-            sleep(2)
         self.loaded_scripts = []
         self.akSharAH = {}
         self.sa_lang = main.obj.get("sa")
@@ -242,7 +244,7 @@ class parivartana:
     def set_typing_lang(self, lang):
         if lang not in self.loaded_scripts:
             file = open(
-                r"resources/dattAMsh/{0}.json".format(lang),
+                f"resources/dattAMsh/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
@@ -504,13 +506,7 @@ class parivartana:
             else:
                 self.capital = b
         self.next_chars = current[-2]
-        if self.sg and self.current_lang_code not in (
-            "Sharada",
-            "Modi",
-            "Brahmi",
-            "Granth",
-            "Siddham",
-        ):
+        if self.sg:
             a = {
                 "key": (key, self.next_chars),
                 "status": (temp, varna_sthiti),

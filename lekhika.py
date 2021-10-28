@@ -16,7 +16,6 @@ from pratidarshan import (
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
-from multiprocessing import Process, freeze_support
 from kuJjikopalambhan import kuYjikolambhikam
 from os import startfile
 from urllib.request import urlopen
@@ -24,8 +23,7 @@ from sys import argv
 
 
 class Main:
-    def __init__(self):
-        self.loaded = False
+    def __init__(self, dbg):
         self.ks = get_registry("anuprayogasthiti")
         self.sg_status = bool(get_registry("lekhanasahAyikA"))
         self.msg = set([])
@@ -34,11 +32,11 @@ class Main:
         self.loaded_scripts = []
         self.loaded_display_lng = []
         self.lang_mode = ""
+        self.debug = dbg
         self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
         self.temp = self.ks
         self.darshan = ""
         self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
-        self.loaded = True
         self.value_change = [False, False]
         th_tk = Thread(target=self.start_tk, name="TK")
         th_tk.daemon = True
@@ -91,8 +89,6 @@ class Main:
     def get(self, name, val=0):
         if name == "ks":
             return self.ks
-        elif name == "ready":
-            return self.loaded
         elif name == "display_data":
             return self.display_data[self.darshan]
         elif name == "clicked":
@@ -219,7 +215,12 @@ class Main:
         elif n == "close_set_false":
             self.close_status = True
         elif n == "restart":
-            pass
+            alert(
+                self.r.l_data["tray"]["restarted"],
+                color="purple",
+            )
+            self.msg.add("restart")
+            self.value_change[1] = True
         if "sg" in n:
             self.r.title_ref["sahayika"].update_lekha(
                 self.r.l_data["title"]["sahayika" + str(int(self.sg_status))]
@@ -255,14 +256,7 @@ class Main:
         self.r.open_img()
 
     def start_tk(self):
-        debug = False
-        try:
-            args = argv[-1]
-            if args == "doShAnusandhAna":
-                debug = True
-        except:
-            pass
-        if debug:
+        if self.debug:
             self.r = pradarshanam(self)
             self.r = self.r.prArambh()
             self.r.init()
@@ -310,44 +304,9 @@ class Main:
 
 
 if __name__ == "__main__":
-    freeze_support()
-
-    class KeyProcessManager:
-        def __init__(self, v):
-            self.v = v
-            self.exit = True
-
-        def start(self):
-            self.process = Process(target=kuYjikolambhikam, args=(self.v,))
-            self.process.daemon = True
-            self.process.start()
-            self.process.join()
-            if self.exit:
-                global tsk
-                tsk.close()
-            elif not self.exit:
-                self.exit = True
-
-        def restart(self):
-            self.exit = False
-            self.process.kill()
-            th = Thread(target=self.start)
-            th.daemon = True
-            th.start()
-            global tsk
-            alert(
-                tsk.display["tray"]["restarted"],
-                color="purple",
-            )
 
     class TaskBar:
         def init(self, val):
-            gh = False
-            while not gh:
-                try:
-                    gh = val.get("ready")
-                except:
-                    pass
             self.display = val.get("display_data")
             self.lang = val.get("lang")
             self.ks = val.get("ks")
@@ -370,8 +329,8 @@ if __name__ == "__main__":
             return menu(
                 item(
                     "🔄 " + self.display["tray"]["restart"],
-                    lambda k: key.restart(),
-                    radio=True,
+                    lambda k: val.exec_taskbar_commands("restart"),
+                    radio=False,
                 ),
                 item(
                     self.display["on"],
@@ -614,15 +573,17 @@ if __name__ == "__main__":
                 else:
                     sleep(0.5)
 
-    BaseManager.register("Main", Main)
-    m = BaseManager()
-    m.start()
-    val = m.Main()
+    dbg = False
+    try:
+        args = argv[-1]
+        if args == "doShAnusandhAna":
+            dbg = True
+    except:
+        pass
+
+    val = Main(dbg)
     tsk = TaskBar()
-    key = KeyProcessManager(val)
-    th = Thread(target=key.start)
-    th.daemon = True
-    th.start()
+    key = kuYjikolambhikam(val)
     tsk.init(val)
 
     def update():
@@ -686,14 +647,7 @@ if __name__ == "__main__":
             root.after(30000, lambda: root.destroy())
             root.mainloop()
 
-    debug = False
-    try:
-        args = argv[-1]
-        if args == "doShAnusandhAna":
-            debug = True
-    except:
-        pass
-    if not debug:
+    if not val.debug:
         y = Thread(target=update)
         y.daemon = True
         y.start()
