@@ -936,6 +936,7 @@ class pradarshanam:
 
 class sahAyikA:
     def __init__(self, m):
+        self.image_pressed = False
         th = Thread(target=self.__start)
         th.daemon = True
         th.start()
@@ -987,7 +988,6 @@ class sahAyikA:
         img_lbl = ttk.Label(f2, cursor="target")
         img_lbl.grid(row=1, column=0, pady=(3, 0), padx=(2, 0))
         img_lbl.configure(image=i[self.arrow_up])
-        self.image_pressed = False
         self.varna_clicked = ""
         self.no_replace = False
         self.no_procedure = False

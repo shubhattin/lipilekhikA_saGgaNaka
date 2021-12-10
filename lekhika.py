@@ -20,6 +20,7 @@ from kuJjikopalambhan import kuYjikolambhikam
 from os import startfile
 from urllib.request import urlopen
 from sys import argv
+from json import loads
 
 
 class Main:
@@ -36,7 +37,8 @@ class Main:
         self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
         self.temp = self.ks
         self.darshan = ""
-        self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
+        self.load_display_lng(
+            display_lang_lists[get_registry("bhAShAnuprayogaH")])
         self.value_change = [False, False]
         th_tk = Thread(target=self.start_tk, name="TK")
         th_tk.daemon = True
@@ -50,25 +52,25 @@ class Main:
 
     def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
-            file = open(
+            fl = open(
                 f"resources/dattAMsh/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
-            exec(f"self.akSharAH[lang]={file.read()}")
-            file.close()
+            self.akSharAH[lang] = loads(fl.read())
+            fl.close()
             self.loaded_scripts.append(lang)
         self.lang_mode = lang
 
     def load_display_lng(self, lang):
         if lang not in self.loaded_display_lng:
-            file = open(
+            fl = open(
                 f"resources/dattAMsh/display/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
-            exec(f"self.display_data[lang]={file.read()}")
-            file.close()
+            self.display_data[lang] = loads(fl.read())
+            fl.close()
             self.loaded_display_lng.append(lang)
         self.darshan = lang
 
@@ -179,7 +181,8 @@ class Main:
             self.sg_status = not self.sg_status
             self.msg.add("sg")
             self.value_change[1] = True
-            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(
+                image=self.r.image1[int(self.sg_status)])
             if not self.sg_status:
                 self.get("hide_sg")
             self.sandesh.add("sg")
@@ -187,7 +190,8 @@ class Main:
             self.value_change[0] = True
         elif n == "sg_on":
             self.sg_status = True
-            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(
+                image=self.r.image1[int(self.sg_status)])
             self.msg.add("sg")
             self.value_change[1] = True
             self.sandesh.add("sg")
@@ -200,7 +204,8 @@ class Main:
             )
         elif n == "sg_off":
             self.sg_status = False
-            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(
+                image=self.r.image1[int(self.sg_status)])
             self.msg.add("sg")
             self.value_change[1] = True
             self.get("hide_sg")
@@ -523,7 +528,8 @@ if __name__ == "__main__":
                     "💻" + self.display["tray"]["show"],
                     lambda _: val.exec_taskbar_commands("show"),
                 ),
-                item("❌ " + self.display["tray"]["exit"], lambda k: self.close()),
+                item("❌ " + self.display["tray"]
+                     ["exit"], lambda k: self.close()),
             )
 
         def close(self, k=False):

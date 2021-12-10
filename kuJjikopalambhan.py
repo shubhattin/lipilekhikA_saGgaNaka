@@ -12,6 +12,7 @@ from keyboard import (
 from mouse import on_click, on_middle_click, on_right_click, unhook_all as mouse_unhook
 from time import time, sleep
 from threading import Thread
+from json import loads
 
 # sarve_bhAShA
 sarve_bhAShA = "#$',-.0123456789;ACDEGHIJKLMNOQRSTUWYabcdefghijklmnopqrstuvwxyz"
@@ -47,7 +48,7 @@ class kuYjikolambhikam:
             a = self.get("get_val_change")[1]
             if a:
                 self.update()
-                self.get("set_val_change",1)
+                self.get("set_val_change", 1)
             else:
                 sleep(t)
                 if self.ks == 1:
@@ -243,13 +244,13 @@ class parivartana:
 
     def set_typing_lang(self, lang):
         if lang not in self.loaded_scripts:
-            file = open(
+            fl = open(
                 f"resources/dattAMsh/{lang}.json",
                 encoding="utf-8",
                 mode="r+",
             )
-            exec(f"self.akSharAH[lang]={file.read()}")
-            file.close()
+            self.akSharAH[lang] = loads(fl.read())
+            fl.close()
             self.loaded_scripts.append(lang)
         self.aksharANI = self.akSharAH[lang]
         self.current_lang_code = lang
@@ -484,7 +485,8 @@ class parivartana:
             if varna_sthiti == 1:
                 self.varNa[1] += self.halant
             elif varna_sthiti == 3:
-                self.varNa[1] = self.varNa[1][:-1] + self.halant + self.varNa[1][-1]
+                self.varNa[1] = self.varNa[1][:-1] + \
+                    self.halant + self.varNa[1][-1]
         self.likha(
             self.varNa[1], self.varNa[2], self.back_space, self.halanta_add_status
         )
@@ -548,7 +550,8 @@ class parivartana:
         self.back_space = 0
         if special:
             self.store_last_of_3 = ""
-            self.pUrva_lekhit = [["", -1], ["", -1], ["", -1], ["", -1], ["", -1]]
+            self.pUrva_lekhit = [["", -1], ["", -1],
+                                 ["", -1], ["", -1], ["", -1]]
             self.main.get("hide_sg")
             self.main.get("clear_sg_val")
             self.capital = [0, "", -1, -1, 0, 0, False]
