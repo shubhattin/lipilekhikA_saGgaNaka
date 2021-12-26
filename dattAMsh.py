@@ -22,10 +22,10 @@ lang_code = [
         "कोंकणी": "Konkani",
         "অসমীয়া": "Assamese",
         "संस्कृतम्": "Sanskrit",
+        "पूर्ण-देवनागरी": "Purna-Devanagari",
         "नेपाली": "Nepali",
         "ਪੰਜਾਬੀ": "Punjabi",
-        "اُردُو‎": "Urdu",
-        "كٲشُر": "Kashmiri",
+        "اُردُو": "Urdu",
         "Romanized": "Romanized",
         "සිංහල": "Sinhala",
         "தமிழ்-Extended": "Tamil-Extended",
@@ -54,9 +54,9 @@ display_lang_lists = (
     "मराठी",
     "ગુજરાતી",
     "മലയാളം",
-    "ଓଡ଼ିଆ",    
+    "ଓଡ଼ିଆ",
     "ਪੰਜਾਬੀ",
-    "اُردُو"
+    "اُردُو",
 )
 bhAShAH = []
 for x in lang_code[0]:
@@ -74,6 +74,7 @@ AJAY = {
     "Siddham": "अजय्",
     "Marathi": "अजय्",
     "Konkani": "अजय्",
+    "Purna-Devanagari": "अजय्",
     "Tamil": "அஜய்",
     "Sinhala": "අජය්",
     "Tamil-Extended": "அஜய்",
@@ -87,7 +88,6 @@ AJAY = {
     "Gujarati": "અજય્",
     "Punjabi": "ਅਜਯ੍",
     "Urdu": "اجَے ",
-    "Kashmiri": "اجَے ",
     "Romanized": "ajay ",
     "Sharada": "अजय्",
     "Modi": "अजय्",

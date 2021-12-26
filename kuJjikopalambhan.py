@@ -111,7 +111,7 @@ class kuYjikolambhikam:
             self.clear()
         elif (
             self.ks == 1
-            and self.main.current_lang_code in ("Urdu", "Kashmiri")
+            and self.main.current_lang_code == "Urdu"
             and key in ("?",)
         ):
             send_keys("backspace")
@@ -255,7 +255,7 @@ class parivartana:
         self.aksharANI = self.akSharAH[lang]
         self.current_lang_code = lang
         self.sarve = [c for c in self.aksharANI]
-        if lang not in ("Urdu", "Romanized", "Kashmiri"):
+        if lang not in ("Urdu", "Romanized"):
             self.halant = self.aksharANI["."][".x"][0]
         self.sa_lang = self.aksharANI["く"]
         self.first = False

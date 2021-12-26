@@ -14,6 +14,7 @@ import tkinter.ttk as ttk
 from tkinter.constants import CENTER, DISABLED, END, INSERT, NORMAL
 from tkinter.font import Font
 from os import startfile
+import webbrowser as web
 from winregistry import WinRegistry
 from dattAMsh import (
     lang_code,
@@ -576,7 +577,7 @@ class pradarshanam:
             lambda x: self.style.configure(
                 "sa_off.TRadiobutton", foreground="black"),
         )
-        if self.main_object.lang_mode not in ("Urdu", "Romanized", "Kashmiri"):
+        if self.main_object.lang_mode not in ("Urdu", "Romanized"):
             self.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.8, 0))
         command_frame.grid(row=2, column=0, sticky=NW)
         frame = ttk.Frame(self.root)
@@ -710,7 +711,7 @@ class pradarshanam:
             Image.open(r"resources\img\github.webp").resize((24, 24))
         )
         git.configure(image=fh)
-        git.bind("<Button-1>", lambda s: start_file(r"resources\srota.url"))
+        git.bind("<Button-1>", lambda s: web.open("https://get.lipilekhika.com/source"))
         self.github_obj = ToolTip(
             "GitHub",
             self.root,
@@ -776,8 +777,6 @@ class pradarshanam:
                 a = lang_code[0][v]
                 if a in ["Sanskrit", "Nepali", "Konkani", "Marathi"]:
                     a = "Hindi"
-                if a == "Kashmiri":
-                    a = "Urdu"
                 image_collection[v] = ImageTk.PhotoImage(
                     Image.open("resources\\img\\lang\\" + a + ".png")
                 )

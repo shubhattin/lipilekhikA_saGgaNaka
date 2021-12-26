@@ -251,7 +251,7 @@ class Main:
         self.r.sanskrit_mode.set(self.sa_lang)
         self.sandesh.add("lang")
         self.sandesh.add("title")
-        if l in ("Urdu", "Romanized", "Kashmiri"):
+        if l in ("Urdu", "Romanized"):
             self.r.fr_ajay.grid_forget()
         else:
             self.r.fr_ajay.grid(row=0, column=2, sticky="nw", pady=(1.5, 0))
@@ -421,12 +421,6 @@ if __name__ == "__main__":
                         ),
                         menu.SEPARATOR,
                         item(
-                            lang_code[1]["Kashmiri"],
-                            lambda _: val.update_typ_lang("Kashmiri"),
-                            checked=lambda item: self.lang == "Kashmiri",
-                            radio=True,
-                        ),
-                        item(
                             lang_code[1]["Urdu"],
                             lambda _: val.update_typ_lang("Urdu"),
                             checked=lambda item: self.lang == "Urdu",
@@ -437,6 +431,12 @@ if __name__ == "__main__":
                             lang_code[1]["Punjabi"],
                             lambda _: val.update_typ_lang("Punjabi"),
                             checked=lambda item: self.lang == "Punjabi",
+                            radio=True,
+                        ),
+                        item(
+                            lang_code[1]["Purna-Devanagari"],
+                            lambda _: val.update_typ_lang("Purna-Devanagari"),
+                            checked=lambda item: self.lang == "Purna-Devanagari",
                             radio=True,
                         ),
                         item(
@@ -604,7 +604,8 @@ if __name__ == "__main__":
 
             def check_decision(n, tk):
                 if n:
-                    start_file(r"resources\updatewebsite.url")
+                    import webbrowser as web                   
+                    web.open("https://rebrand.ly/lekhika")
                 tk.destroy()
 
             global tsk
