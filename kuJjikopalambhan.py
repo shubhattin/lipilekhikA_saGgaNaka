@@ -222,7 +222,7 @@ class parivartana:
         lang = main.obj.get("lang")
         self.first = True
         self.set_typing_lang(lang)
-        if self.aksharANI["く"] == 1 and self.sa_lang == 0:
+        if self.aksharANI["sa"] == 1 and self.sa_lang == 0:
             self.sa_lang = 1
         self.back_space = 0
         self.sg_status = False
@@ -257,7 +257,7 @@ class parivartana:
         self.sarve = [c for c in self.aksharANI]
         if lang not in ("Urdu", "Romanized"):
             self.halant = self.aksharANI["."][".x"][0]
-        self.sa_lang = self.aksharANI["く"]
+        self.sa_lang = self.aksharANI["sa"]
         self.first = False
 
     def prakriyA(self, key):

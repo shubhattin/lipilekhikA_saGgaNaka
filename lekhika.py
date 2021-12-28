@@ -45,7 +45,7 @@ class Main:
         self.sandesh = set([])
         self.window_start_status = get_registry("koShThaprArambha")
         self.tk_status = False
-        self.sa_lang = self.akSharAH[self.lang_mode]["く"]
+        self.sa_lang = self.akSharAH[self.lang_mode]["sa"]
         th_tk.start()
         self.tray = None
         self.sg = sahAyikA(self)
@@ -78,7 +78,7 @@ class Main:
         a = AJAY[self.lang_mode]
         self.akSharaH = {}
         self.loaded_scripts = []
-        if self.akSharAH[self.lang_mode]["く"] == 0:
+        if self.akSharAH[self.lang_mode]["sa"] == 0:
             a = a[:-1]
         text = self.r.l_data["startup_msg"].format(
             (self.r.l_data["off"], self.r.l_data["on"])[self.ks],
@@ -247,7 +247,7 @@ class Main:
             color="green",
             lapse=1200,
         )
-        self.sa_lang = self.akSharAH[self.lang_mode]["く"]
+        self.sa_lang = self.akSharAH[self.lang_mode]["sa"]
         self.r.sanskrit_mode.set(self.sa_lang)
         self.sandesh.add("lang")
         self.sandesh.add("title")
