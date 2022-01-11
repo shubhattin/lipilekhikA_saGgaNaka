@@ -1,4 +1,3 @@
-from multiprocessing.managers import BaseManager
 from threading import Thread
 from time import sleep
 from pratidarshan import (
@@ -8,7 +7,6 @@ from pratidarshan import (
     lang_code,
     AJAY,
     sahAyikA,
-    start_file,
     ver,
     Tk,
     ttk,
@@ -604,7 +602,8 @@ if __name__ == "__main__":
 
             def check_decision(n, tk):
                 if n:
-                    import webbrowser as web                   
+                    import webbrowser as web
+
                     web.open("https://rebrand.ly/lekhika")
                 tk.destroy()
 
