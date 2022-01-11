@@ -35,8 +35,7 @@ class Main:
         self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
         self.temp = self.ks
         self.darshan = ""
-        self.load_display_lng(
-            display_lang_lists[get_registry("bhAShAnuprayogaH")])
+        self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
         self.value_change = [False, False]
         th_tk = Thread(target=self.start_tk, name="TK")
         th_tk.daemon = True
@@ -45,8 +44,8 @@ class Main:
         self.tk_status = False
         self.sa_lang = self.akSharAH[self.lang_mode]["sa"]
         th_tk.start()
-        self.tray = None
         self.sg = sahAyikA(self)
+        self.tray = None
 
     def load_typ_lng(self, lang):
         if lang not in self.loaded_scripts:
@@ -179,8 +178,7 @@ class Main:
             self.sg_status = not self.sg_status
             self.msg.add("sg")
             self.value_change[1] = True
-            self.r.sg_button.configure(
-                image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
             if not self.sg_status:
                 self.get("hide_sg")
             self.sandesh.add("sg")
@@ -188,8 +186,7 @@ class Main:
             self.value_change[0] = True
         elif n == "sg_on":
             self.sg_status = True
-            self.r.sg_button.configure(
-                image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
             self.msg.add("sg")
             self.value_change[1] = True
             self.sandesh.add("sg")
@@ -202,8 +199,7 @@ class Main:
             )
         elif n == "sg_off":
             self.sg_status = False
-            self.r.sg_button.configure(
-                image=self.r.image1[int(self.sg_status)])
+            self.r.sg_button.configure(image=self.r.image1[int(self.sg_status)])
             self.msg.add("sg")
             self.value_change[1] = True
             self.get("hide_sg")
@@ -526,8 +522,7 @@ if __name__ == "__main__":
                     "💻" + self.display["tray"]["show"],
                     lambda _: val.exec_taskbar_commands("show"),
                 ),
-                item("❌ " + self.display["tray"]
-                     ["exit"], lambda k: self.close()),
+                item("❌ " + self.display["tray"]["exit"], lambda k: self.close()),
             )
 
         def close(self, k=False):

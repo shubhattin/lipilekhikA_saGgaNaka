@@ -835,21 +835,17 @@ class pradarshanam:
         self.img_win.iconbitmap(r"resources\Icon.ico")
         image_collection = {}
         for v in bhAShAH_img:
-            try:
+            if v == "Vedic":
+                a = "Vedic"
+            else:
                 a = lang_code[0][v]
-                if a in ["Sanskrit", "Nepali", "Konkani", "Marathi"]:
-                    a = "Hindi"
-                image_collection[v] = ImageTk.PhotoImage(
-                    Image.open("resources\\img\\lang\\" + a + ".png")
-                )
-            except:
-                pass
-        try:
-            image_collection["Vedic"] = ImageTk.PhotoImage(
-                Image.open("resources\\img\\lang\\Vedic.png")
-            )
-        except:
-            pass
+            if a in ["Sanskrit", "Nepali", "Konkani", "Marathi"]:
+                a = "Hindi"
+            i = Image.open("resources\\img\\lang\\" + a + ".png")
+            sz = i.size
+            rt = 0.82
+            i = i.resize((int(sz[0] * rt), int(sz[1] * rt)))
+            image_collection[v] = ImageTk.PhotoImage(i)
         fr = ttk.Frame(self.img_win)
         lang = StringVar(self.img_win, value=self.typing_lang.get())
         self.style.configure(
