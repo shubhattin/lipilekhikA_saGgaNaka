@@ -1,4 +1,3 @@
-from threading import Thread
 from time import sleep
 from pratidarshan import (
     pradarshanam,
@@ -11,14 +10,16 @@ from pratidarshan import (
     Tk,
     ttk,
     display_lang_lists,
+    display_lang_data,
+    start_thread,
+    start_file,
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
 from kuJjikopalambhan import kuYjikolambhikam
-from os import startfile
 from urllib.request import urlopen
-from sys import argv
-from json import loads
+import sys
+import json
 
 
 class Main:
@@ -37,13 +38,11 @@ class Main:
         self.darshan = ""
         self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
         self.value_change = [False, False]
-        th_tk = Thread(target=self.start_tk, name="TK")
-        th_tk.daemon = True
         self.sandesh = set([])
         self.window_start_status = get_registry("koShThaprArambha")
         self.tk_status = False
         self.sa_lang = self.akSharAH[self.lang_mode]["sa"]
-        th_tk.start()
+        start_thread(self.start_tk)
         self.sg = sahAyikA(self)
         self.tray = None
 
@@ -54,7 +53,7 @@ class Main:
                 encoding="utf-8",
                 mode="r+",
             )
-            self.akSharAH[lang] = loads(fl.read())
+            self.akSharAH[lang] = json.loads(fl.read())
             fl.close()
             self.loaded_scripts.append(lang)
         self.lang_mode = lang
@@ -66,7 +65,7 @@ class Main:
                 encoding="utf-8",
                 mode="r+",
             )
-            self.display_data[lang] = loads(fl.read())
+            self.display_data[lang] = json.loads(fl.read())
             fl.close()
             self.loaded_display_lng.append(lang)
         self.darshan = lang
@@ -266,9 +265,9 @@ class Main:
                 self.r.init()
             except:
                 try:
-                    startfile("lekhika.exe")
+                    start_file("lekhika.exe")
                 except:
-                    startfile("lekhika.py")
+                    start_file("lekhika.py")
                 self.sandesh.add("close_just")
                 self.value_change[0] = True
 
@@ -319,9 +318,7 @@ if __name__ == "__main__":
             )
             val.exec_taskbar_commands("close_set_false")
             self.val = val
-            th = Thread(target=self.__check_value_updates)
-            th.daemon = True
-            th.start()
+            start_thread(self.__check_value_updates)
 
         def __menu_object(self):
             global key
@@ -574,7 +571,7 @@ if __name__ == "__main__":
 
     dbg = False
     try:
-        args = argv[-1]
+        args = sys.argv[-1]
         if args == "doShAnusandhAna":
             dbg = True
     except:
@@ -649,7 +646,5 @@ if __name__ == "__main__":
             root.mainloop()
 
     if not val.debug:
-        y = Thread(target=update)
-        y.daemon = True
-        y.start()
+        start_thread(update)
     tsk.systray.run()

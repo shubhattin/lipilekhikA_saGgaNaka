@@ -1,15 +1,5 @@
-from keyboard import (
-    add_hotkey,
-    on_press,
-    on_release_key,
-    all_modifiers,
-    on_press_key,
-    write,
-    press_and_release,
-    add_hotkey,
-    unhook_all as key_unhook,
-)
-from mouse import on_click, on_middle_click, on_right_click, unhook_all as mouse_unhook
+import keyboard as kb
+import mouse
 from time import time, sleep
 from threading import Thread
 from json import loads
@@ -72,20 +62,20 @@ class kuYjikolambhikam:
                 self.main.sg_status = False
             self.get("change_less")
 
-        on_release_key("windows", self.on_release)
-        on_release_key("shift", self.on_release)
-        on_release_key("alt", self.on_release)
-        on_release_key("ctrl", self.on_release)
-        add_hotkey("ctrl+cmd", change)
-        add_hotkey("windows+f6", lambda: press_and_release("volume up"))
-        add_hotkey("windows+f5", lambda: press_and_release("volume down"))
-        add_hotkey("windows+esc", lambda: self.get("close_from"))
+        kb.on_release_key("windows", self.on_release)
+        kb.on_release_key("shift", self.on_release)
+        kb.on_release_key("alt", self.on_release)
+        kb.on_release_key("ctrl", self.on_release)
+        kb.add_hotkey("ctrl+cmd", change)
+        kb.add_hotkey("windows+f6", lambda: kb.press_and_release("volume up"))
+        kb.add_hotkey("windows+f5", lambda: kb.press_and_release("volume down"))
+        kb.add_hotkey("windows+esc", lambda: self.get("close_from"))
         for x in sarve_bhAShA:
-            on_press_key(x, self.process_key, suppress=True)
-        on_press(self.detect_key)
-        on_click(lambda: self.clear(mouse=True))
-        on_middle_click(lambda: self.clear(mouse=True))
-        on_right_click(lambda: self.clear(mouse=True))
+            kb.on_press_key(x, self.process_key, suppress=True)
+        kb.on_press(self.detect_key)
+        mouse.on_click(lambda: self.clear(mouse=True))
+        mouse.on_middle_click(lambda: self.clear(mouse=True))
+        mouse.on_right_click(lambda: self.clear(mouse=True))
 
     def on_release(self, c):
         self.single_alt = True
@@ -109,19 +99,15 @@ class kuYjikolambhikam:
         ):
             send_keys("backspace")
             self.clear()
-        elif (
-            self.ks == 1
-            and self.main.current_lang_code == "Urdu"
-            and key in ("?",)
-        ):
+        elif self.ks == 1 and self.main.current_lang_code == "Urdu" and key in ("?",):
             send_keys("backspace")
-            write(self.main.aksharANI[key][key][0])
+            kb.write(self.main.aksharANI[key][key][0])
             self.clear()
         elif "shift" in key or "caps" in key or self.modifier_press_status[0]:
             more = False
         else:
             self.clear()
-        if key in all_modifiers and not self.modifier_press_status[0]:
+        if key in kb.all_modifiers and not self.modifier_press_status[0]:
             self.modifier_press_status = (True, key, tm)
         if self.main.sg_status and self.main.sg and self.ks == 1 and more:
             self.get("hide_sg")
@@ -150,7 +136,7 @@ class kuYjikolambhikam:
             and "shift" not in self.modifier_press_status[1]
         ):
             self.shortcut_press = True
-            press_and_release(key)
+            kb.press_and_release(key)
             self.clear()
         elif self.ks == 0:
             send_keys(key)
@@ -200,17 +186,17 @@ class kuYjikolambhikam:
                     self.vrn.time = time()
                     self.process_key(self.vrn)
             elif x == "restart":
-                key_unhook()
-                mouse_unhook()
+                kb.unhook_all()
+                mouse.unhook_all()
                 self.__start_all_listeners()
         self.get("null_msg")
 
 
 def send_keys(key):
     if len(key) == 1:
-        write(key)
+        kb.write(key)
     else:
-        press_and_release(key)
+        kb.press_and_release(key)
 
 
 class parivartana:
@@ -485,8 +471,7 @@ class parivartana:
             if varna_sthiti == 1:
                 self.varNa[1] += self.halant
             elif varna_sthiti == 3:
-                self.varNa[1] = self.varNa[1][:-1] + \
-                    self.halant + self.varNa[1][-1]
+                self.varNa[1] = self.varNa[1][:-1] + self.halant + self.varNa[1][-1]
         self.likha(
             self.varNa[1], self.varNa[2], self.back_space, self.halanta_add_status
         )
@@ -550,8 +535,7 @@ class parivartana:
         self.back_space = 0
         if special:
             self.store_last_of_3 = ""
-            self.pUrva_lekhit = [["", -1], ["", -1],
-                                 ["", -1], ["", -1], ["", -1]]
+            self.pUrva_lekhit = [["", -1], ["", -1], ["", -1], ["", -1], ["", -1]]
             self.main.get("hide_sg")
             self.main.get("clear_sg_val")
             self.capital = [0, "", -1, -1, 0, 0, False]
@@ -579,9 +563,9 @@ class parivartana:
             back = len(a) - x
         back += bk  # taking extra bksp's into consideratin
         for m in range(back):
-            press_and_release("backspace")
+            kb.press_and_release("backspace")
         if hal:
             lekha = self.halant + lekha
         self.back_space = 0
         self.halanta_add_status = False
-        write(lekha)
+        kb.write(lekha)

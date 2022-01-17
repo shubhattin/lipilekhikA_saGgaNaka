@@ -11,10 +11,10 @@ from tkinter import (
 )
 import tkinter.ttk as ttk
 from tkinter.font import Font
-from os import startfile
+import os
 import webbrowser as web
 from winregistry import WinRegistry
-from mouse import get_position
+import mouse
 from threading import Thread
 from copy import deepcopy
 from PIL import Image, ImageTk
@@ -27,90 +27,65 @@ def antaH_parivartan(js):
     return ret
 
 
+l_list = {
+    "हिन्दी": ["Hindi", "अजय्", "अ"],
+    "বাংলা": ["Bengali", "অজয্", "অ"],
+    "తెలుగు": ["Telugu", "అజయ్", "అ"],
+    "தமிழ்": ["Tamil", "அஜய்", "அ"],
+    "मराठी": ["Marathi", "अजय्", "अ"],
+    "ગુજરાતી": ["Gujarati", "અજય્", "અ"],
+    "മലയാളം": ["Malayalam", "അജയ്", "അ"],
+    "ಕನ್ನಡ": ["Kannada", "ಅಜಯ್", "ಅ"],
+    "ଓଡ଼ିଆ": ["Oriya", "ଅଜଯ୍", "ଅ"],
+    "कोंकणी": ["Konkani", "अजय्", "अ"],
+    "অসমীয়া": ["Assamese", "অজয্", "অ"],
+    "संस्कृतम्": ["Sanskrit", "अजय्", "अ"],
+    "पूर्ण-देवनागरी": ["Purna-Devanagari", "अजय्", "अ"],
+    "नेपाली": ["Nepali", "अजय्", "अ"],
+    "ਪੰਜਾਬੀ": ["Punjabi", "ਅਜਯ੍", "ਅ"],
+    "اُردُو": ["Urdu", "اجَے ", "ب"],
+    "Romanized": ["Romanized", "ajay ", "ā"],
+    "සිංහල": ["Sinhala", "අජය්", "අ"],
+    "தமிழ்-Extended": ["Tamil-Extended", "அஜய்", "அ"],
+    "शारदा": ["Sharada", "अजय्", "अ"],
+    "मोडी": ["Modi", "अजय्", "अ"],
+    "सिद्धम्": ["Siddham", "अजय्", "अ"],
+    "கிரந்த": ["Granth", "அஜய்", "அ"],
+    "ब्राह्मी": ["Brahmi", "अजय्", "अ"],
+}
 lang_code = [
-    {
-        "हिन्दी": "Hindi",
-        "বাংলা": "Bengali",
-        "తెలుగు": "Telugu",
-        "தமிழ்": "Tamil",
-        "मराठी": "Marathi",
-        "ગુજરાતી": "Gujarati",
-        "മലയാളം": "Malayalam",
-        "ಕನ್ನಡ": "Kannada",
-        "ଓଡ଼ିଆ": "Oriya",
-        "कोंकणी": "Konkani",
-        "অসমীয়া": "Assamese",
-        "संस्कृतम्": "Sanskrit",
-        "पूर्ण-देवनागरी": "Purna-Devanagari",
-        "नेपाली": "Nepali",
-        "ਪੰਜਾਬੀ": "Punjabi",
-        "اُردُو": "Urdu",
-        "Romanized": "Romanized",
-        "සිංහල": "Sinhala",
-        "தமிழ்-Extended": "Tamil-Extended",
-        "शारदा": "Sharada",
-        "मोडी": "Modi",
-        "सिद्धम्": "Siddham",
-        "கிரந்த (தமிழ்)": "Granth",
-        "ब्राह्मी": "Brahmi",
-    },
-    [],
+    {},
+    {},
     [],
 ]
+AJAY = {}
+for x in l_list:
+    v = l_list[x]
+    lang_code[0][x] = v[0]
+    AJAY[v[0]] = v[1]
 lang_code[1] = antaH_parivartan(lang_code[0])
 main = False
-for x in lang_code[1]:
-    lang_code[2].append(x)
-
-display_lang_lists = (
-    "English",
-    "हिन्दी",
-    "संस्कृतम्",
-    "తెలుగు",
-    "বাংলা",
-    "தமிழ்",
-    "ಕನ್ನಡ",
-    "मराठी",
-    "ગુજરાતી",
-    "മലയാളം",
-    "ଓଡ଼ିଆ",
-    "ਪੰਜਾਬੀ",
-    "اُردُو",
-)
-bhAShAH = []
-for x in lang_code[0]:
-    bhAShAH.append(x)
-bhAShAH_img = []
-for x in bhAShAH:
-    bhAShAH_img.append(x)
+lang_code[2] = list(lang_code[1].keys())
+bhAShAH = list(lang_code[0].keys())
+bhAShAH_img = deepcopy(bhAShAH)
 bhAShAH_img.append("Vedic")
-
-AJAY = {
-    "Hindi": "अजय्",
-    "Sanskrit": "अजय्",
-    "Brahmi": "अजय्",
-    "Nepali": "अजय्",
-    "Siddham": "अजय्",
-    "Marathi": "अजय्",
-    "Konkani": "अजय्",
-    "Purna-Devanagari": "अजय्",
-    "Tamil": "அஜய்",
-    "Sinhala": "අජය්",
-    "Tamil-Extended": "அஜய்",
-    "Granth": "அஜய்",
-    "Telugu": "అజయ్",
-    "Malayalam": "അജയ്",
-    "Kannada": "ಅಜಯ್",
-    "Bengali": "অজয্",
-    "Oriya": "ଅଜଯ୍",
-    "Assamese": "অজয্",
-    "Gujarati": "અજય્",
-    "Punjabi": "ਅਜਯ੍",
-    "Urdu": "اجَے",
-    "Romanized": "ajay ",
-    "Sharada": "अजय्",
-    "Modi": "अजय्",
+display_lang_data = {
+    "English": "en",
+    "हिन्दी": "hi",
+    "संस्कृतम्": "sa",
+    "తెలుగు": "te",
+    "বাংলা": "bn",
+    "தமிழ்": "ta",
+    "ಕನ್ನಡ": "kn",
+    "मराठी": "mr",
+    "ગુજરાતી": "gu",
+    "മലയാളം": "ml",
+    "ଓଡ଼ିଆ": "or",
+    "ਪੰਜਾਬੀ": "pn",
+    "اُردُو": "ur",
 }
+display_lang_lists = list(display_lang_data.keys())
+
 ver = 1.15
 lengths = [[], []]
 for x in range(0, len(lang_code[2])):
@@ -119,13 +94,14 @@ for x in range(0, len(display_lang_lists)):
     lengths[0].append(x)
 
 
-def start_file(f):
-    def s():
-        startfile(f)
+def start_thread(f):
+    th = Thread(target=f)
+    th.daemon = True
+    th.start()
 
-    a = Thread(target=s)
-    a.daemon = True
-    a.start()
+
+def start_file(f):
+    start_thread(lambda: os.startfile(f))
 
 
 reg = WinRegistry()
@@ -201,9 +177,7 @@ def alert(msg, color, AkAra=19, geo=None, lapse=0, wait=False, bg=None):
     if wait:
         s(msg, color, lapse, geo, AkAra, bg)
         return
-    a = Thread(target=s, args=(msg, color, lapse, geo, AkAra, bg))
-    a.daemon = True
-    a.start()
+    start_thread(lambda: s(msg, color, lapse, geo, AkAra, bg))
 
 
 class ToolTip:
@@ -281,6 +255,7 @@ class pradarshanam:
     def init(self):
         main_obj = self.main_object
         self.ex = False
+        self.id = {}
         self.centred = False
         self.style = ttk.Style(self.root)
         self.advanced_window_data_preperation = False
@@ -392,60 +367,6 @@ class pradarshanam:
                 d[1],
                 self.language.get(),
             )
-
-    def __mini_lekhika(self):
-        win = Toplevel(self.root)
-        win.wm_withdraw()
-        self.__mini = win
-        img = {
-            "max": ImageTk.PhotoImage(
-                Image.open(r"resources\img\maximize.webp").resize((28, 28))
-            ),
-            "drag": ImageTk.PhotoImage(
-                Image.open(r"resources\img\drag.webp").resize((20, 20))
-            ),
-            "close": ImageTk.PhotoImage(
-                Image.open(r"resources\img\close.webp").resize((24, 24))
-            ),
-        }
-        self.root.eval(f"tk::PlaceWindow {str(win)} center")
-        win.geometry(f"+{win.winfo_rootx()}+{50}")
-        win.wm_overrideredirect(True)
-        win.attributes("-topmost", True)
-        win.attributes("-alpha", 0.88)
-        fr = Frame(win, bg="white")
-        dr = ttk.Label(fr, image=img["drag"], background="white")
-        dr.grid(row=0, column=8, padx=5)
-        max = ttk.Label(fr, image=img["max"], background="white")
-        max.grid(row=0, column=10)
-        self.org = [0, 0]
-        close = ttk.Label(fr, image=img["close"], background="white", cursor="target")
-        close.grid(row=0, column=11, padx=(7, 4), ipadx=2)
-        close.bind("<Button-1>", lambda s: self.hide(bac=True))
-
-        def drag(t, record=False):
-            if record:
-                self.org = t.x, t.y
-            else:
-                x, y = t.x, t.y
-                x += win.winfo_rootx() - self.org[0]
-                y += win.winfo_rooty() - self.org[1]
-                win.geometry(f"+{x}+{y}")
-
-        dr.bind("<Button-1>", lambda s: drag(s, True))
-        dr.bind("<B1-Motion>", drag)
-        max.bind("<Button-1>", self.show)
-
-        def change_color(elm, cl):
-            elm.widget.configure(background=cl)
-
-        max.bind("<Enter>", lambda h: change_color(h, "yellow"))
-        max.bind("<Leave>", lambda h: change_color(h, "white"))
-        close.bind("<Enter>", lambda h: change_color(h, "yellow"))
-        close.bind("<Leave>", lambda h: change_color(h, "white"))
-        fr.pack(side="right")
-        win.wm_deiconify()
-        win.mainloop()
 
     def __top_frame(self):
         f1 = Frame(self.root)
@@ -661,13 +582,10 @@ class pradarshanam:
             foreground="green",
             background="white",
         )
-        asd = deepcopy(bhAShAH)
-        asd.append("")
-        asd = asd[::-1]
         sd = ttk.OptionMenu(
             frame1,
             self.typing_lang,
-            *asd,
+            *self.__option_menu_obj(bhAShAH),
             style="type_lang.TMenubutton",
             command=lambda s: self.main_object.update_typ_lang(
                 self.typing_lang.get(), True
@@ -724,6 +642,12 @@ class pradarshanam:
             foreground="purple",
             textvariable=self.display_values["instructions"],
         ).grid(row=4, column=0, sticky=NW)
+
+    def __option_menu_obj(self, a):
+        asd = deepcopy(a)
+        asd.append("")
+        asd = asd[::-1]
+        return asd
 
     def update_sans_mode(self, mannual=0, v=0):
         if mannual == 1:  # from lang change
@@ -909,7 +833,6 @@ class pradarshanam:
                 self.main_object.sandesh.add("close")
                 self.main_object.value_change[0] = True
             elif bac:
-                self.__mini.wm_withdraw()
                 alert(
                     self.l_data["hide2"],
                     color="purple",
@@ -918,7 +841,7 @@ class pradarshanam:
                     AkAra=13,
                 )
             else:
-                self.__mini_lekhika()
+                self.hide(bac=True)
 
     def show(self, e=None):
         self.root.wm_deiconify()
@@ -990,9 +913,7 @@ class sahAyikA:
     def __init__(self, m):
         self.varna_clicked_st = False
         self.image_pressed = False
-        th = Thread(target=self.__start)
-        th.daemon = True
-        th.start()
+        start_thread(self.__start)
         self.c = 0
         self.d = 0
         self.main = m
@@ -1206,7 +1127,7 @@ class sahAyikA:
                 extra_cap[1][0],
             )
         if not self.no_replace:
-            s = get_position()
+            s = mouse.get_position()
             self.root.geometry("+{0}+{1}".format(s[0] + 5, s[1] + 25))
         else:
             self.no_replace = False
