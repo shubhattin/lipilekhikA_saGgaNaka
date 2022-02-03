@@ -29,8 +29,6 @@ class Main:
         self.msg = set([])
         self.akSharAH = {}
         self.display_data = {}
-        self.loaded_scripts = []
-        self.loaded_display_lng = []
         self.lang_mode = ""
         self.debug = dbg
         self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
@@ -47,33 +45,32 @@ class Main:
         self.tray = None
 
     def load_typ_lng(self, lang):
-        if lang not in self.loaded_scripts:
-            fl = open(
-                f"resources/dattAMsh/{lang}.json",
-                encoding="utf-8",
-                mode="r+",
-            )
-            self.akSharAH[lang] = json.loads(fl.read())
-            fl.close()
-            self.loaded_scripts.append(lang)
         self.lang_mode = lang
+        if lang in self.akSharAH:
+            return
+        fl = open(
+            f"resources/dattAMsh/{lang}.json",
+            encoding="utf-8",
+            mode="r+",
+        )
+        self.akSharAH[lang] = json.loads(fl.read())
+        fl.close()
 
     def load_display_lng(self, lang):
-        if lang not in self.loaded_display_lng:
-            fl = open(
-                f"resources/dattAMsh/display/{lang}.json",
-                encoding="utf-8",
-                mode="r+",
-            )
-            self.display_data[lang] = json.loads(fl.read())
-            fl.close()
-            self.loaded_display_lng.append(lang)
         self.darshan = lang
+        if lang in self.display_data:
+            return
+        fl = open(
+            f"resources/dattAMsh/display/{lang}.json",
+            encoding="utf-8",
+            mode="r+",
+        )
+        self.display_data[lang] = json.loads(fl.read())
+        fl.close()
 
     def give_startup_msg(self):
         a = AJAY[self.lang_mode]
         self.akSharaH = {}
-        self.loaded_scripts = []
         if self.akSharAH[self.lang_mode]["sa"] == 0:
             a = a[:-1]
         text = self.r.l_data["startup_msg"].format(
