@@ -256,6 +256,7 @@ class pradarshanam:
         main_obj = self.main_object
         self.ex = False
         self.id = {}
+        self.v = {"minimized": False}
         self.centred = False
         self.style = ttk.Style(self.root)
         self.advanced_window_data_preperation = False
@@ -402,7 +403,7 @@ class pradarshanam:
         bhASA["menu"].config(font=("Nirmala UI", (8), "bold"), fg="red")
         self.bac = ttk.Label(f1)
         self.bac.pack(side="right", padx=(65, 19.5), pady=(1.5, 0))
-        self.bac.bind("<Button-1>", lambda s: self.hide())
+        self.bac.bind("<Button-1>", lambda s: self.hide(bac=True))
         self.__objs["background"] = self.bac
         self.__menu_kAraH()
 
@@ -832,7 +833,8 @@ class pradarshanam:
             if event == True:
                 self.main_object.sandesh.add("close")
                 self.main_object.value_change[0] = True
-            elif bac:
+            elif bac and not self.v["minimized"]:
+                self.v["minimized"] = True
                 alert(
                     self.l_data["hide2"],
                     color="purple",
@@ -840,8 +842,6 @@ class pradarshanam:
                     geo=True,
                     AkAra=13,
                 )
-            else:
-                self.hide(bac=True)
 
     def show(self, e=None):
         self.root.wm_deiconify()
