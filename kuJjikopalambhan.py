@@ -286,6 +286,12 @@ class parivartana:
 
     def vitaraNa(self, key):
         cap_0_from_1 = [False, ["", -1]]
+        if (
+            self.current_lang_code == "Urdu"
+            and key in ("a", "i", "u")
+            and self.pUrva_lekhit[4][1] == -1
+        ):
+            key += "1"
         data = self.aksharANI[key[0]]
         current = data[key]
         prev_temp = self.pUrva_lekhit[3][1]

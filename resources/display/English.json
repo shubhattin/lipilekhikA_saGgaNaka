@@ -8,7 +8,7 @@
     "lang": "Language",
     "licence_title": "Lipi Lekhika Licence",
     "menu_values": {
-        "about": "Parichaya",
+        "about": "About",
         "default": "Set Default Options",
         "encoding_table": "View Encoding Table",
         "extra": "Other Information",
@@ -90,7 +90,8 @@
         "typing_lang_main": "Language",
         "version": "Version : {0}",
         "vishisht_button": "Use Main Application",
-        "vishisht_label": "This is the Advanced Version of Lipi Lekhika.\nIt may contain Edited Data."
+        "vishisht_label": "This is the Advanced Version of Lipi Lekhika.\nIt may contain Edited Data.",
+        "issue": "Report an issue"
     },
     "yes": "Yes"
 }

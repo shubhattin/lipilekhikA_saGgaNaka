@@ -61,7 +61,7 @@ class Main:
         if lang in self.display_data:
             return
         fl = open(
-            f"resources/dattAMsh/display/{lang}.json",
+            f"resources/display/{lang}.json",
             encoding="utf-8",
             mode="r+",
         )
@@ -620,7 +620,7 @@ if __name__ == "__main__":
                 "W.TButton", font=("Nirmala UI", 10, "bold"), foreground="red"
             )
             style.configure("R.TFrame", background="#faf9ae")
-            frm1 = ttk.Frame(style="R.TFrame")
+            frm1 = ttk.Frame(root, style="R.TFrame")
             frm1.grid(row=0, column=0, sticky="nw")
             ttk.Label(
                 frm1, text=text["download_msg"], justify="center", style="A.TLabel"

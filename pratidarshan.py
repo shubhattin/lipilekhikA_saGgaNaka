@@ -19,6 +19,8 @@ from threading import Thread
 from copy import deepcopy
 from PIL import Image, ImageTk
 
+ver = 1.17
+
 
 def antaH_parivartan(js):
     ret = {}
@@ -86,7 +88,6 @@ display_lang_data = {
 }
 display_lang_lists = list(display_lang_data.keys())
 
-ver = 1.15
 lengths = [[], []]
 for x in range(0, len(lang_code[2])):
     lengths[1].append(x)
@@ -597,14 +598,14 @@ class pradarshanam:
         self.__objs["typ_lang"] = frame1
         sd["menu"].config(font=("Nirmala UI", 10, "bold"), fg="red", bg="#faf9ae")
         add = ttk.Label(frame)
-        add.grid(row=0, column=2, sticky=NW, pady=4, padx=(3.3, 6.4))
+        # add.grid(row=0, column=2, sticky=NW, pady=4, padx=(3.3,0))
         self.__objs["add_lang"] = add
         self.image1 = (
             ImageTk.PhotoImage(Image.open(r"resources\img\off1.webp").resize((32, 18))),
             ImageTk.PhotoImage(Image.open(r"resources\img\on1.webp").resize((32, 18))),
         )
         self.sg_button = ttk.Label(frame)
-        self.sg_button.grid(row=0, column=4, sticky=NW, pady=2.5)
+        self.sg_button.grid(row=0, column=4, sticky=NW, pady=2.5, padx=(6.4, 0))
         self.sg_button.bind(
             "<Button-1>", lambda x: self.main_object.exec_taskbar_commands("sg", False)
         )
@@ -688,13 +689,15 @@ class pradarshanam:
             font=("Nirmala UI", 11, "bold"),
             foreground="red",
         ).pack()
-        f = ttk.Frame(about)
         ttk.Label(
-            f, text="भारते रचितः", font=("Nirmala UI", 11, "bold"), foreground="blue"
-        ).grid(row=0, column=0, padx=(0, 10))
+            about,
+            text="भारते रचितः",
+            font=("Nirmala UI", 11, "bold"),
+            foreground="blue",
+        ).pack()
+        f = ttk.Frame(about)
         git = ttk.Label(f)
-        git.grid(row=0, column=2)
-        f.pack()
+        git.grid(row=0, column=0)
         fh = ImageTk.PhotoImage(
             Image.open(r"resources\img\github.webp").resize((24, 24))
         )
@@ -705,10 +708,21 @@ class pradarshanam:
             self.root,
             git,
             self.l_data["title"]["github"],
-            -270,
+            -200,
             28,
             self.language.get(),
         )
+        self.style.configure(
+            "issue.TButton", font=("Nirmala Ui", 10, "bold"), foreground="red"
+        )
+        ttk.Button(
+            f,
+            textvariable=self.display_values["issue"],
+            command=lambda: web.open(
+                "https://github.com/shubhattin/lipilekhikA_saGgaNaka_saMskaraNa_srotam/issues"
+            ),
+            style="issue.TButton",
+        ).grid(row=0, column=1, padx=(2, 0))
 
         def pratyAdesham():
             r = Toplevel(about)
@@ -717,7 +731,7 @@ class pradarshanam:
             r.wm_withdraw()
             r.resizable(False, False)
             r.iconbitmap(r"resources\Icon.ico")
-            file = open("resources/dattAMsh/LICENCE.txt", mode="r+")
+            file = open("resources/LICENCE.txt", mode="r+")
             lpo = file.read()
             file.close()
             ttk.Label(
@@ -730,11 +744,12 @@ class pradarshanam:
             "lic_btn.TButton", font=("Nirmala Ui", 10, "bold"), foreground="black"
         )
         ttk.Button(
-            about,
+            f,
             textvariable=self.display_values["licence"],
             command=pratyAdesham,
             style="lic_btn.TButton",
-        ).pack()
+        ).grid(row=0, column=2, padx=(8, 0))
+        f.pack()
         about.wm_deiconify()
         about.mainloop()
 
@@ -936,6 +951,15 @@ class sahAyikA:
             self.root.update()
 
         init()
+        self.font_lang = ""
+        self.fonts = {
+            "Modi": "Noto Sans Modi",
+            "Sharada": "Noto Sans Sharada",
+            "Brahmi": "Noto Sans Brahmi",
+            "Siddham": "Noto Sans Siddham",
+            "Granth": "Noto Sans Grantha",
+            "Urdu": "Calibri",
+        }
         up = Frame(self.root, highlightbackground="black", highlightthickness=1.5)
         up.pack(ipadx=4)
         f = Frame(up)
@@ -978,18 +1002,20 @@ class sahAyikA:
         f2.grid(row=0, column=0, sticky=NW, padx=(5, 9))
         self.frame = Frame(f)
         frm = Frame(self.frame)
+        self.style = ttk.Style(self.root)
+        self.style.configure(
+            "key0.TLabel", font=("Nirmala UI", 18, "bold"), foreground="brown"
+        )
         ttk.Label(
-            frm,
-            textvariable=self.key[0],
-            font=("Nirmala UI", 18, "bold"),
-            foreground="brown",
-            justify="center",
+            frm, textvariable=self.key[0], justify="center", style="key0.TLabel"
         ).grid(row=0, column=0, sticky="n")
+        self.style.configure(
+            "key1.TLabel", font=("Nirmala UI", 13, "bold"), foreground="red"
+        )
         ttk.Label(
             frm,
             textvariable=self.key[1],
-            font=("Nirmala UI", 13, "bold"),
-            foreground="red",
+            style="key1.TLabel",
             justify="center",
         ).grid(row=1, column=0, sticky="n")
         frm.grid(row=0, column=0, sticky=NW, padx=(0, 8))
@@ -1025,24 +1051,28 @@ class sahAyikA:
             self.main.value_change[1] = True
             w.configure(foreground=cl)
 
-        for x in range(0, 60):
+        self.style.configure(
+            "code.TLabel", font=("Nirmala UI", 15, "bold"), foreground="black"
+        )
+        self.style.configure(
+            "varna.TLabel", font=("Nirmala UI", 15, "bold"), foreground="green"
+        )
+        for x in range(60):
             self.f[x] = Frame(self.frame)
             self.C[x] = ttk.Label(
                 self.f[x],
                 textvariable=self.next[x],
-                font=("Nirmala UI", 15, "bold"),
-                foreground="black",
                 justify="center",
                 cursor="plus",
+                style="code.TLabel",
             )
             self.C[x].pack()
             self.D[x] = ttk.Label(
                 self.f[x],
                 textvariable=self.varna[x],
-                font=("Nirmala UI", 15, "bold"),
-                foreground="green",
                 justify="center",
                 cursor="plus",
+                style="varna.TLabel",
             )
             self.D[x].pack()
             coll[self.C[x]] = x
@@ -1091,10 +1121,21 @@ class sahAyikA:
                 self.last_hovered = [False, -1]
         self.c -= 1
 
+    def __set_font(self):
+        ln = self.main.lang_mode
+        if self.font_lang != ln:
+            self.font_lang = ln
+            fnt = "Nirmala UI"
+            if ln in self.fonts:
+                fnt = self.fonts[ln]
+            self.style.configure("varna.TLabel", font=(fnt, 15, "bold"))
+            self.style.configure("key1.TLabel", font=(fnt, 13, "bold"))
+
     def show(self, v):
         if self.no_procedure:
             return
         self.reset_capital_status = False
+        self.__set_font()
 
         def reset_capital(k):
             self.d -= 1
