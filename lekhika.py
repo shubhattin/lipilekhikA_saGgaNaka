@@ -24,20 +24,20 @@ import json
 
 class Main:
     def __init__(self, dbg):
-        self.ks = get_registry("anuprayogasthiti")
-        self.sg_status = bool(get_registry("lekhanasahAyikA"))
+        self.ks = get_registry("sthiti")
+        self.sg_status = bool(get_registry("sahayika"))
         self.msg = set([])
         self.akSharAH = {}
         self.display_data = {}
         self.lang_mode = ""
         self.debug = dbg
-        self.load_typ_lng(lang_code[2][get_registry("lekhanbhAShA")])
+        self.load_typ_lng(lang_code[2][get_registry("lipi")])
         self.temp = self.ks
         self.darshan = ""
-        self.load_display_lng(display_lang_lists[get_registry("bhAShAnuprayogaH")])
+        self.load_display_lng(display_lang_lists[get_registry("bhAShA")])
         self.value_change = [False, False]
         self.sandesh = set([])
-        self.window_start_status = get_registry("koShThaprArambha")
+        self.window_start_status = get_registry("koShTha")
         self.tk_status = False
         self.sa_lang = self.akSharAH[self.lang_mode]["sa"]
         start_thread(self.start_tk)

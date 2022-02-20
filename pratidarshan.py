@@ -13,7 +13,7 @@ import tkinter.ttk as ttk
 from tkinter.font import Font
 import os
 import webbrowser as web
-from winregistry import WinRegistry
+from winregistry import WinRegistry, WinregType
 import mouse
 from threading import Thread
 from copy import deepcopy
@@ -106,41 +106,39 @@ def start_file(f):
 
 
 reg = WinRegistry()
-path = ["", "LipiLekhikAvikalpAni"]
-path[0] = f"HKCU\\SOFTWARE\\{path[1]}"
+path = f"HKCU\\SOFTWARE\\lipilekhikAvikalpAni"
+
+try:
+    reg.read_key(path)
+except FileNotFoundError:
+    reg.create_key(path)
 
 
 def get_registry(name):
     global reg, path
     try:
-        a = int(reg.read_value(path[0], name)["data"])
+        a = int(reg.read_entry(path, name).value)
         err = False
-        if name in (
-            "anuprayogasthiti",
-            "lekhanasahAyikA",
-            "koShThaprArambha",
-        ) and a not in (
+        if name in ("sthiti", "sahayika", "koShTha",) and a not in (
             0,
             1,
         ):
             err = True
-        elif name == "bhAShAnuprayogaH" and (a not in lengths[0]):
+        elif name == "bhAShA" and (a not in lengths[0]):
             err = True
-        elif name == "lekhanbhAShA" and (a not in lengths[1]):
+        elif name == "lipi" and (a not in lengths[1]):
             err = True
         if err:
             raise FileNotFoundError
         return a
     except:
-        store_registry(0 if name != "lekhanasahAyikA" else 1, name)
+        store_registry(0 if name != "sahayika" else 1, name)
         return get_registry(name)
 
 
 def store_registry(value, name):
     global reg, path
-    if path[1] not in reg.read_key("HKCU\\SOFTWARE")["keys"]:
-        reg.create_key(path[0])
-    reg.write_value(path[0], name, str(value).encode("ascii"), "REG_BINARY")
+    reg.write_entry(path, name, str(value).encode("ascii"), WinregType.REG_BINARY)
 
 
 def alert(msg, color, AkAra=19, geo=None, lapse=0, wait=False, bg=None):
@@ -433,7 +431,7 @@ class pradarshanam:
                     lang_code[2].index(
                         lang_code[0][self.option_values["typing"].get()]
                     ),
-                    "lekhanbhAShA",
+                    "lipi",
                 ),
             )
         self.m.menu.add_cascade(
@@ -449,9 +447,7 @@ class pradarshanam:
             indicatoron=False,
             background="#e8f5bf",
             foreground="green",
-            command=lambda: store_registry(
-                self.option_values["app"].get(), "anuprayogasthiti"
-            ),
+            command=lambda: store_registry(self.option_values["app"].get(), "sthiti"),
         )
         self.m.menu.add_checkbutton(
             label=self.menu_values["sahayika"],
@@ -462,9 +458,7 @@ class pradarshanam:
             activeforeground="yellow",
             background="#e8f5bf",
             foreground="blue",
-            command=lambda: store_registry(
-                self.option_values["sg"].get(), "lekhanasahAyikA"
-            ),
+            command=lambda: store_registry(self.option_values["sg"].get(), "sahayika"),
         )
         self.m.menu.add_checkbutton(
             label=self.menu_values["startup"],
@@ -478,7 +472,7 @@ class pradarshanam:
             foreground="brown",
             indicatoron=False,
             command=lambda: store_registry(
-                self.option_values["startup"].get(), "koShThaprArambha"
+                self.option_values["startup"].get(), "koShTha"
             ),
         )
         self.m.menu.add_separator()
@@ -702,7 +696,7 @@ class pradarshanam:
             Image.open(r"resources\img\github.webp").resize((24, 24))
         )
         git.configure(image=fh)
-        git.bind("<Button-1>", lambda s: web.open("https://get.lipilekhika.com/source"))
+        git.bind("<Button-1>", lambda s: web.open("https://get.lipilekhika.com/websource"))
         self.github_obj = ToolTip(
             "GitHub",
             self.root,
@@ -719,7 +713,7 @@ class pradarshanam:
             f,
             textvariable=self.display_values["issue"],
             command=lambda: web.open(
-                "https://github.com/shubhattin/lipilekhikA_saGgaNaka_saMskaraNa_srotam/issues"
+                "https://github.com/shubhattin/lipilekhikA_saGgaNaka/issues"
             ),
             style="issue.TButton",
         ).grid(row=0, column=1, padx=(2, 0))
@@ -900,7 +894,7 @@ class pradarshanam:
         a = display_lang_lists.index(lang)
         self.main_object.load_display_lng(lang)
         self.l_data = self.main_object.display_data[lang]
-        store_registry(a, "bhAShAnuprayogaH")
+        store_registry(a, "bhAShA")
         set_text()
         for x in self.__title_properties:
             if x in self.__dynamic_titles:
@@ -1266,3 +1260,59 @@ class sahAyikA:
         l_data = self.main.display_data[self.main.darshan]
         self.extra[0].set(l_data["sahAyikA_msg"]["first_sahayika"])
         self.extra[1].set(l_data["sahAyikA_msg"]["second_sahayika"])
+
+
+# def __mini_lekhika(self):
+#         win = Toplevel(self.root)
+#         win.wm_withdraw()
+#         self.__mini = win
+#         img = {
+#             "max": ImageTk.PhotoImage(
+#                 Image.open(r"resources\img\maximize.webp").resize((28, 28))
+#             ),
+#             "drag": ImageTk.PhotoImage(
+#                 Image.open(r"resources\img\drag.webp").resize((20, 20))
+#             ),
+#             "close": ImageTk.PhotoImage(
+#                 Image.open(r"resources\img\close.webp").resize((24, 24))
+#             ),
+#         }
+#         self.root.eval(f"tk::PlaceWindow {str(win)} center")
+#         win.geometry(f"+{win.winfo_rootx()}+{50}")
+#         win.wm_overrideredirect(True)
+#         win.attributes("-topmost", True)
+#         win.attributes("-alpha", 0.88)
+#         fr = Frame(win, bg="white")
+#         dr = ttk.Label(fr, image=img["drag"], background="white")
+#         dr.grid(row=0, column=8, padx=5)
+#         max = ttk.Label(fr, image=img["max"], background="white")
+#         max.grid(row=0, column=10)
+#         self.org = [0, 0]
+#         close = ttk.Label(fr, image=img["close"],
+#                           background="white", cursor="target")
+#         close.grid(row=0, column=11, padx=(7, 4), ipadx=2)
+#         close.bind("<Button-1>", lambda s: self.hide(bac=True))
+
+#         def drag(t, record=False):
+#             if record:
+#                 self.org = t.x, t.y
+#             else:
+#                 x, y = t.x, t.y
+#                 x += win.winfo_rootx() - self.org[0]
+#                 y += win.winfo_rooty() - self.org[1]
+#                 win.geometry(f"+{x}+{y}")
+
+#         dr.bind("<Button-1>", lambda s: drag(s, True))
+#         dr.bind("<B1-Motion>", drag)
+#         max.bind("<Button-1>", self.show)
+
+#         def change_color(elm, cl):
+#             elm.widget.configure(background=cl)
+
+#         max.bind("<Enter>", lambda h: change_color(h, "yellow"))
+#         max.bind("<Leave>", lambda h: change_color(h, "white"))
+#         close.bind("<Enter>", lambda h: change_color(h, "yellow"))
+#         close.bind("<Leave>", lambda h: change_color(h, "white"))
+#         fr.pack(side="right")
+#         win.wm_deiconify()
+#         win.mainloop()
