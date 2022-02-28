@@ -18,6 +18,7 @@ import mouse
 from threading import Thread
 from copy import deepcopy
 from PIL import Image, ImageTk
+from urllib.request import urlopen
 
 ver = 1.17
 
@@ -44,16 +45,16 @@ l_list = {
     "संस्कृतम्": ["Sanskrit", "अजय्", "अ"],
     "पूर्ण-देवनागरी": ["Purna-Devanagari", "अजय्", "अ"],
     "नेपाली": ["Nepali", "अजय्", "अ"],
-    "ਪੰਜਾਬੀ": ["Punjabi", "ਅਜਯ੍", "ਅ"],
-    "اُردُو": ["Urdu", "اجَے ", "ب"],
-    "Romanized": ["Romanized", "ajay ", "ā"],
     "සිංහල": ["Sinhala", "අජය්", "අ"],
+    "ਪੰਜਾਬੀ": ["Punjabi", "ਅਜਯ੍", "ਅ"],
     "தமிழ்-Extended": ["Tamil-Extended", "அஜய்", "அ"],
     "शारदा": ["Sharada", "अजय्", "अ"],
     "मोडी": ["Modi", "अजय्", "अ"],
     "सिद्धम्": ["Siddham", "अजय्", "अ"],
     "கிரந்த": ["Granth", "அஜய்", "அ"],
     "ब्राह्मी": ["Brahmi", "अजय्", "अ"],
+    "Romanized": ["Romanized", "ajay ", "ā"],
+    "اُردُو": ["Urdu", "اجَے ", "ب"],
 }
 lang_code = [
     {},
@@ -241,6 +242,65 @@ class ToolTip:
             self.label.configure(font=("Nirmala UI", size))
         elif self.chalita_sthiti:
             self.win.wm_deiconify()
+
+
+def update_win(tsk):
+    ver1 = 0
+    try:
+        o = urlopen("https://rebrand.ly/lipi_pc_ver")
+        ver1 = float(o.read().decode("utf-8"))
+    except:
+        pass
+    if ver1 > ver:
+
+        def check_decision(n, tk):
+            if n:
+                import webbrowser as web
+
+                web.open("https://rebrand.ly/lekhikadownload")
+            tk.destroy()
+        text = tsk.display
+        root = Tk()
+        style = ttk.Style(root)
+        root.title("")
+        root.configure(bg="#faf9ae")
+        root.wm_overrideredirect(True)
+        root.eval("tk::PlaceWindow . center")
+        root.attributes("-topmost", True)
+        root.after(650, lambda: root.attributes("-topmost", True))
+        root.after(2600, lambda: root.attributes("-topmost", False))
+        style.configure(
+            "A.TLabel",
+            font=("Nirmala UI", 14, "bold"),
+            foreground="brown",
+            background="#faf9ae",
+        )
+        style.configure(
+            "Q.TButton", font=("Nirmala UI", 10, "bold"), foreground="green"
+        )
+        style.configure("W.TButton", font=("Nirmala UI", 10, "bold"), foreground="red")
+        style.configure("R.TFrame", background="#faf9ae")
+        frm1 = ttk.Frame(root, style="R.TFrame")
+        frm1.grid(row=0, column=0, sticky="nw")
+        ttk.Label(
+            frm1, text=text["download_msg"], justify="center", style="A.TLabel"
+        ).grid(row=0, column=0, sticky="nw")
+        frm = ttk.Frame(frm1)
+        ttk.Button(
+            frm,
+            text=text["yes"],
+            style="Q.TButton",
+            command=lambda: check_decision(True, root),
+        ).grid(row=0, column=0, sticky="n")
+        ttk.Button(
+            frm,
+            text=text["no"],
+            style="W.TButton",
+            command=lambda: check_decision(False, root),
+        ).grid(row=0, column=1, sticky="n")
+        frm.grid(row=1, column=0, sticky="n")
+        root.after(30000, lambda: root.destroy())
+        root.mainloop()
 
 
 class pradarshanam:
@@ -696,7 +756,9 @@ class pradarshanam:
             Image.open(r"resources\img\github.webp").resize((24, 24))
         )
         git.configure(image=fh)
-        git.bind("<Button-1>", lambda s: web.open("https://get.lipilekhika.com/websource"))
+        git.bind(
+            "<Button-1>", lambda s: web.open("https://get.lipilekhika.com/websource")
+        )
         self.github_obj = ToolTip(
             "GitHub",
             self.root,

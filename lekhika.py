@@ -6,18 +6,16 @@ from pratidarshan import (
     lang_code,
     AJAY,
     sahAyikA,
-    ver,
-    Tk,
-    ttk,
     display_lang_lists,
     display_lang_data,
     start_thread,
     start_file,
+    update_win,
+    urlopen
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
 from kuJjikopalambhan import kuYjikolambhikam
-from urllib.request import urlopen
 import sys
 import json
 
@@ -319,6 +317,18 @@ if __name__ == "__main__":
 
         def __menu_object(self):
             global key
+            langs = ""
+            for x in lang_code[2][::-1]:
+                if x in ("Brahmi",):
+                    langs += "menu.SEPARATOR,"
+                langs += f"""item(
+                        lang_code[1]["{x}"],
+                        lambda _: val.update_typ_lang("{x}"),
+                        checked=lambda item: tsk.lang == "{x}",
+                        radio=True,
+                    ),"""
+            langs = eval(f"menu({langs})")
+
             return menu(
                 item(
                     "🔄 " + self.display["tray"]["restart"],
@@ -355,158 +365,7 @@ if __name__ == "__main__":
                         ),
                     ),
                 ),
-                item(
-                    self.display["values"]["typing_lang_main"],
-                    menu(
-                        item(
-                            lang_code[1]["Brahmi"],
-                            lambda _: val.update_typ_lang("Brahmi"),
-                            checked=lambda item: self.lang == "Brahmi",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Granth"],
-                            lambda _: val.update_typ_lang("Granth"),
-                            checked=lambda item: self.lang == "Granth",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Siddham"],
-                            lambda _: val.update_typ_lang("Siddham"),
-                            checked=lambda item: self.lang == "Siddham",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Sharada"],
-                            lambda _: val.update_typ_lang("Sharada"),
-                            checked=lambda item: self.lang == "Sharada",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Modi"],
-                            lambda _: val.update_typ_lang("Modi"),
-                            checked=lambda item: self.lang == "Modi",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Tamil-Extended"],
-                            lambda _: val.update_typ_lang("Tamil-Extended"),
-                            checked=lambda item: self.lang == "Tamil-Extended",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Sinhala"],
-                            lambda _: val.update_typ_lang("Sinhala"),
-                            checked=lambda item: self.lang == "Sharada",
-                            radio=True,
-                        ),
-                        menu.SEPARATOR,
-                        item(
-                            lang_code[1]["Romanized"],
-                            lambda _: val.update_typ_lang("Romanized"),
-                            checked=lambda item: self.lang == "Romanized",
-                            radio=True,
-                        ),
-                        menu.SEPARATOR,
-                        item(
-                            lang_code[1]["Urdu"],
-                            lambda _: val.update_typ_lang("Urdu"),
-                            checked=lambda item: self.lang == "Urdu",
-                            radio=True,
-                        ),
-                        menu.SEPARATOR,
-                        item(
-                            lang_code[1]["Punjabi"],
-                            lambda _: val.update_typ_lang("Punjabi"),
-                            checked=lambda item: self.lang == "Punjabi",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Purna-Devanagari"],
-                            lambda _: val.update_typ_lang("Purna-Devanagari"),
-                            checked=lambda item: self.lang == "Purna-Devanagari",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Nepali"],
-                            lambda _: val.update_typ_lang("Nepali"),
-                            checked=lambda item: self.lang == "Nepali",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Sanskrit"],
-                            lambda _: val.update_typ_lang("Sanskrit"),
-                            checked=lambda item: self.lang == "Sanskrit",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Assamese"],
-                            lambda _: val.update_typ_lang("Assamese"),
-                            checked=lambda item: self.lang == "Assamese",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Konkani"],
-                            lambda _: val.update_typ_lang("Konkani"),
-                            checked=lambda item: self.lang == "Konkani",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Oriya"],
-                            lambda _: val.update_typ_lang("Oriya"),
-                            checked=lambda item: self.lang == "Oriya",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Kannada"],
-                            lambda _: val.update_typ_lang("Kannada"),
-                            checked=lambda item: self.lang == "Kannada",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Malayalam"],
-                            lambda _: val.update_typ_lang("Malayalam"),
-                            checked=lambda item: self.lang == "Malayalam",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Gujarati"],
-                            lambda _: val.update_typ_lang("Gujarati"),
-                            checked=lambda item: self.lang == "Gujarati",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Marathi"],
-                            lambda _: val.update_typ_lang("Marathi"),
-                            checked=lambda item: self.lang == "Marathi",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Tamil"],
-                            lambda _: val.update_typ_lang("Tamil"),
-                            checked=lambda item: self.lang == "Tamil",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Telugu"],
-                            lambda _: val.update_typ_lang("Telugu"),
-                            checked=lambda item: self.lang == "Telugu",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Bengali"],
-                            lambda _: val.update_typ_lang("Bengali"),
-                            checked=lambda item: self.lang == "Bengali",
-                            radio=True,
-                        ),
-                        item(
-                            lang_code[1]["Hindi"],
-                            lambda _: val.update_typ_lang("Hindi"),
-                            checked=lambda item: self.lang == "Hindi",
-                            radio=True,
-                        ),
-                    ),
-                ),
+                item(self.display["values"]["typing_lang_main"], langs),
                 item(
                     self.display["menu_values"]["encoding_table"],
                     lambda x: val.open_img(),
@@ -579,69 +438,6 @@ if __name__ == "__main__":
     key = kuYjikolambhikam(val)
     tsk.init(val)
 
-    def update():
-
-        ver1 = 0
-        try:
-            o = urlopen("https://get.lipilekhika.com/navasanskaranam")
-            ver1 = float(o.read().decode("utf-8"))
-        except:
-            pass
-        if ver1 > ver:
-
-            def check_decision(n, tk):
-                if n:
-                    import webbrowser as web
-
-                    web.open("https://rebrand.ly/lekhika")
-                tk.destroy()
-
-            global tsk
-            text = tsk.display
-            root = Tk()
-            style = ttk.Style(root)
-            root.title("")
-            root.configure(bg="#faf9ae")
-            root.wm_overrideredirect(True)
-            root.eval("tk::PlaceWindow . center")
-            root.attributes("-topmost", True)
-            root.after(650, lambda: root.attributes("-topmost", True))
-            root.after(2600, lambda: root.attributes("-topmost", False))
-            style.configure(
-                "A.TLabel",
-                font=("Nirmala UI", 14, "bold"),
-                foreground="brown",
-                background="#faf9ae",
-            )
-            style.configure(
-                "Q.TButton", font=("Nirmala UI", 10, "bold"), foreground="green"
-            )
-            style.configure(
-                "W.TButton", font=("Nirmala UI", 10, "bold"), foreground="red"
-            )
-            style.configure("R.TFrame", background="#faf9ae")
-            frm1 = ttk.Frame(root, style="R.TFrame")
-            frm1.grid(row=0, column=0, sticky="nw")
-            ttk.Label(
-                frm1, text=text["download_msg"], justify="center", style="A.TLabel"
-            ).grid(row=0, column=0, sticky="nw")
-            frm = ttk.Frame(frm1)
-            ttk.Button(
-                frm,
-                text=text["yes"],
-                style="Q.TButton",
-                command=lambda: check_decision(True, root),
-            ).grid(row=0, column=0, sticky="n")
-            ttk.Button(
-                frm,
-                text=text["no"],
-                style="W.TButton",
-                command=lambda: check_decision(False, root),
-            ).grid(row=0, column=1, sticky="n")
-            frm.grid(row=1, column=0, sticky="n")
-            root.after(30000, lambda: root.destroy())
-            root.mainloop()
-
     if not val.debug:
-        start_thread(update)
+        start_thread(lambda :update_win(tsk))
     tsk.systray.run()
