@@ -11,7 +11,7 @@ from pratidarshan import (
     start_thread,
     start_file,
     update_win,
-    urlopen
+    urlopen,
 )
 from pystray import MenuItem as item, Menu as menu, Icon as SysTray
 from PIL import Image
@@ -439,5 +439,5 @@ if __name__ == "__main__":
     tsk.init(val)
 
     if not val.debug:
-        start_thread(lambda :update_win(tsk))
+        start_thread(lambda: update_win(tsk))
     tsk.systray.run()

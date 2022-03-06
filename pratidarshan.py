@@ -85,6 +85,7 @@ display_lang_data = {
     "മലയാളം": "ml",
     "ଓଡ଼ିଆ": "or",
     "ਪੰਜਾਬੀ": "pn",
+    "অসমীয়া": "as",
     "اُردُو": "ur",
 }
 display_lang_lists = list(display_lang_data.keys())
