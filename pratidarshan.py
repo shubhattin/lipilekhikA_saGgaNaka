@@ -758,7 +758,7 @@ class pradarshanam:
         )
         git.configure(image=fh)
         git.bind(
-            "<Button-1>", lambda s: web.open("https://get.lipilekhika.com/websource")
+            "<Button-1>", lambda s: web.open("https://github.com/shubhattin/lipilekhikA_saGgaNaka")
         )
         self.github_obj = ToolTip(
             "GitHub",
