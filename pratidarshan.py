@@ -45,6 +45,8 @@ l_list = {
     "संस्कृतम्": ["Sanskrit", "अजय्", "अ"],
     "पूर्ण-देवनागरी": ["Purna-Devanagari", "अजय्", "अ"],
     "नेपाली": ["Nepali", "अजय्", "अ"],
+    "कश्मीरी": ["Kashmiri", "अजय्", "अ"],
+    "सिन्धी": ["Sindhi", "अजय्", "अ"],
     "සිංහල": ["Sinhala", "අජය්", "අ"],
     "ਪੰਜਾਬੀ": ["Punjabi", "ਅਜਯ੍", "ਅ"],
     "தமிழ்-Extended": ["Tamil-Extended", "அஜய்", "அ"],
@@ -836,8 +838,6 @@ class pradarshanam:
                 a = "Vedic"
             else:
                 a = lang_code[0][v]
-            if a in ["Sanskrit", "Nepali", "Konkani", "Marathi"]:
-                a = "Hindi"
             i = Image.open("resources\\img\\lang\\" + a + ".png")
             sz = i.size
             rt = 0.82
